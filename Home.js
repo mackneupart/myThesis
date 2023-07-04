@@ -3,11 +3,11 @@ import { Alert, Button, StyleSheet, Text, View } from "react-native";
 export default function Home({ navigation }) {
   return (
     <View style={styles.container}>
-      <Text style={styles.textHeader}>TESTING!</Text>
+      <Text style={styles.textHeader}>Home Screen!</Text>
       <Text style={styles.textViews}>Text for testing</Text>
       <View>
         <Button
-          title="Press me"
+          title="Go to see map"
           onPress={() => navigation.navigate("Profile")}
         />
       </View>

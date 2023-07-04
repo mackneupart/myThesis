@@ -4,6 +4,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Home from "./Home";
 import Profile from "./Profile";
+import About from "./About";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -18,7 +19,12 @@ export default function App() {
         <Stack.Screen
           name="Profile"
           component={Profile}
-          options={{ title: "Profile" }}
+          options={{ title: "Map" }}
+        />
+        <Stack.Screen
+          name="About"
+          component={About}
+          options={{ title: "About" }}
         />
       </Stack.Navigator>
     </NavigationContainer>
