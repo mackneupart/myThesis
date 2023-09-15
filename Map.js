@@ -5,7 +5,7 @@ import MapView, { Marker, Callout } from "react-native-maps";
 import data from "./data.json";
 import * as Location from "expo-location";
 
-export default function Profile({ navigation }) {
+export default function Map({ navigation }) {
   const [currentLocation, setCurrentLocation] = useState(null);
 
   useEffect(() => {

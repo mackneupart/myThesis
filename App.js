@@ -3,8 +3,9 @@ import { StyleSheet } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Home from "./Home";
-import Profile from "./Profile";
+import Map from "./Map";
 import About from "./About";
+import SignUp from "./SignUp";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -17,14 +18,23 @@ export default function App() {
           options={{ title: "Home" }}
         />
         <Stack.Screen
-          name="Profile"
-          component={Profile}
+          name="Map"
+          component={Map}
           options={{ title: "Map" }}
+          headerShown={false}
         />
         <Stack.Screen
           name="About"
           component={About}
           options={{ title: "About" }}
+        />
+        <Stack.Screen
+          name="SignUp"
+          component={SignUp}
+          options={{
+            title: "SignUp",
+            headerShown: false,
+          }}
         />
       </Stack.Navigator>
     </NavigationContainer>
