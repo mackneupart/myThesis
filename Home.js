@@ -1,9 +1,17 @@
-import { Button, StyleSheet, Text, View, Image, TextInput } from "react-native";
+import {
+  Button,
+  StyleSheet,
+  Text,
+  View,
+  Image,
+  TextInput,
+  ScrollView,
+} from "react-native";
 import { useFonts } from "expo-font";
 import AppLoading from "expo-app-loading";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import CustomButton from "./src/components/customButton";
-import { signInUser } from "./src/config/Database";
+import { signInUser, getUser, signOutUser } from "./src/config/Database";
 
 export default function Home({ navigation }) {
   const [loaded] = useFonts({
@@ -16,18 +24,45 @@ export default function Home({ navigation }) {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const email = await getUser();
+      setEmail(email);
+    };
+    fetchUser();
+  }, []);
 
   if (!loaded) {
     return <AppLoading />; // Render loading UI or a placeholder
   }
 
-  const handleLogin = () => {
-    // Here, you can implement your login logic
-    // Typically, you would send the email and password to your server for authentication.
-    // For this example, we'll just print them to the console.
-    console.log("Email:", email);
-    console.log("Password:", password);
-    signInUser(email, password);
+  const handleLogin = async () => {
+    try {
+      const success = await signInUser(email, password);
+      if (success) {
+        console.log("user is signed in");
+        setIsLoggedIn(true);
+        navigation.navigate("Profile");
+      } else {
+        console.log("user is not signed in");
+        setIsLoggedIn(false);
+      }
+    } catch (error) {
+      console.log("login error: " + error);
+    }
+    setEmail("");
+    setPassword("");
+  };
+
+  const handleLogout = () => {
+    try {
+      signOutUser();
+      setIsLoggedIn(false);
+    } catch (error) {
+      console.log("logout error: " + error);
+    }
   };
 
   return (
@@ -43,6 +78,7 @@ export default function Home({ navigation }) {
           style={{ width: 200, height: 200 }} // Set the desired width and height
         />
       </View>
+
       <View>
         <Text style={styles.textViews}>
           Check out the map without logging in{" "}
@@ -53,35 +89,46 @@ export default function Home({ navigation }) {
           </Text>
         </Text>
       </View>
-      <TextInput
-        style={styles.input}
-        placeholder="Enter your email"
-        onChangeText={(text) => setEmail(text)}
-        value={email}
-      />
+      {isLoggedIn ? (
+        <CustomButton
+          text="Logout"
+          onPress={handleLogout}
+          textColor="white"
+          bgColor={"#8F5AFF"}
+        />
+      ) : (
+        <View>
+          <TextInput
+            style={styles.input}
+            placeholder="Enter your email"
+            onChangeText={(text) => setEmail(text)}
+            value={email}
+          />
 
-      <TextInput
-        style={styles.input}
-        placeholder="Enter your password"
-        secureTextEntry={true} // To hide the entered text
-        onChangeText={(text) => setPassword(text)}
-        value={password}
-      />
+          <TextInput
+            style={styles.input}
+            placeholder="Enter your password"
+            secureTextEntry={true} // To hide the entered text
+            onChangeText={(text) => setPassword(text)}
+            value={password}
+          />
 
-      <CustomButton
-        text="Login"
-        onPress={handleLogin}
-        textColor="white"
-        bgColor={"#8F5AFF"}
-      />
-      <Text style={styles.signup}>
-        Dont have an account?{"\n"}
-        <Text
-          style={{ textDecorationLine: "underline" }}
-          onPress={() => navigation.navigate("SignUp")}>
-          sign up here
-        </Text>
-      </Text>
+          <CustomButton
+            text="Login"
+            onPress={handleLogin}
+            textColor="white"
+            bgColor={"#8F5AFF"}
+          />
+          <Text style={styles.signup}>
+            Dont have an account?{"\n"}
+            <Text
+              style={{ textDecorationLine: "underline" }}
+              onPress={() => navigation.navigate("SignUp")}>
+              sign up here
+            </Text>
+          </Text>
+        </View>
+      )}
     </View>
   );
 }

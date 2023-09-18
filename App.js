@@ -6,6 +6,7 @@ import Home from "./Home";
 import Map from "./Map";
 import About from "./About";
 import SignUp from "./SignUp";
+import Profile from "./Profile";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -33,6 +34,14 @@ export default function App() {
           component={SignUp}
           options={{
             title: "SignUp",
+            headerShown: false,
+          }}
+        />
+        <Stack.Screen
+          name="Profile"
+          component={Profile}
+          options={{
+            title: "Profile",
             headerShown: false,
           }}
         />
