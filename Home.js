@@ -3,6 +3,7 @@ import { useFonts } from "expo-font";
 import AppLoading from "expo-app-loading";
 import { useState } from "react";
 import CustomButton from "./src/components/customButton";
+import { signInUser } from "./src/config/Database";
 
 export default function Home({ navigation }) {
   const [loaded] = useFonts({
@@ -26,7 +27,9 @@ export default function Home({ navigation }) {
     // For this example, we'll just print them to the console.
     console.log("Email:", email);
     console.log("Password:", password);
+    signInUser(email, password);
   };
+
   return (
     <View style={styles.container}>
       <Text style={styles.textHeader}>Queer{"\n"} Fortællinger</Text>

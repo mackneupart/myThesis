@@ -1,6 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet } from "react-native";
 import CustomButton from "./src/components/customButton";
+import { addUser, registerUser } from "./src/config/Database";
 
 const SignUp = ({ navigation }) => {
   const [username, setUsername] = useState("");
@@ -9,8 +10,16 @@ const SignUp = ({ navigation }) => {
   const [repPassword, setRepPassword] = useState("");
 
   const handleSignUp = () => {
+    console.log(email);
+    console.log(password);
     // Implement your sign-up logic here.
     // You can send the user's data (username, email, password) to your server for registration.
+    try {
+      registerUser(email, password);
+      navigation.navigate("Home");
+    } catch (error) {
+      console.log(error);
+    }
   };
 
   return (
