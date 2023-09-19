@@ -1,50 +1,69 @@
-import { StatusBar } from "expo-status-bar";
-import { StyleSheet } from "react-native";
+import { StyleSheet, ActivityIndicator } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import Home from "./Home";
-import Map from "./Map";
-import About from "./About";
-import SignUp from "./SignUp";
-import Profile from "./Profile";
+import Login from "./src/Login";
+import Map from "./src/Map";
+import NavigationTab from "./src/components/NavigationTab"; // Import the NavigationTab component
+import { getUser } from "./src/config/Database";
+import { useEffect, useState } from "react";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
+  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [isLoading, setIsLoading] = useState(true); // Add loading state
+
+  useEffect(() => {
+    const fetchUser = async () => {
+      const user = await getUser();
+      console.log("user: " + user);
+      if (user !== undefined) {
+        setIsLoggedIn(true);
+      } else {
+        setIsLoggedIn(false);
+      }
+      setIsLoading(false); // Set loading state to false once user data is fetched
+    };
+    fetchUser();
+  }, []);
+
+  const handleUserLogin = () => {
+    setIsLoggedIn(true);
+  };
+
+  const handleUserLogout = () => {
+    setIsLoggedIn(false);
+    console.log("handleLogout was called");
+  };
+
+  if (isLoading) {
+    // Show loading indicator or placeholder while fetching user data
+    return <ActivityIndicator />;
+  }
+
   return (
     <NavigationContainer>
       <Stack.Navigator>
-        <Stack.Screen
-          name="Home"
-          component={Home}
-          options={{ title: "Home" }}
-        />
-        <Stack.Screen
-          name="Map"
-          component={Map}
-          options={{ title: "Map" }}
-          headerShown={false}
-        />
-        <Stack.Screen
-          name="About"
-          component={About}
-          options={{ title: "About" }}
-        />
-        <Stack.Screen
-          name="SignUp"
-          component={SignUp}
-          options={{
-            title: "SignUp",
-            headerShown: false,
-          }}
-        />
-        <Stack.Screen
-          name="Profile"
-          component={Profile}
-          options={{
-            title: "Profile",
-            headerShown: false,
-          }}
-        />
+        {isLoggedIn ? (
+          <Stack.Screen name="navigation" options={{ headerShown: false }}>
+            {(props) => (
+              <NavigationTab {...props} handleUserLogout={handleUserLogout} />
+            )}
+          </Stack.Screen>
+        ) : (
+          <>
+            <Stack.Screen name="Login" options={{ headerShown: false }}>
+              {(props) => (
+                <Login {...props} handleUserLogin={handleUserLogin} />
+              )}
+            </Stack.Screen>
+            <Stack.Screen
+              name="Map"
+              component={Map}
+              options={{ title: "Map" }}
+              headerShown={false}
+            />
+          </>
+        )}
       </Stack.Navigator>
     </NavigationContainer>
   );
@@ -64,3 +83,34 @@ const styles = StyleSheet.create({
     color: "blue",
   },
 });
+
+{
+  /* <Stack.Screen
+            name="Map"
+            component={Map}
+            options={{ title: "Map" }}
+            headerShown={false}
+          />
+          <Stack.Screen
+            name="About"
+            component={About}
+            options={{ title: "About" }}
+          />
+          <Stack.Screen
+            name="SignUp"
+            component={SignUp}
+            options={{
+              title: "SignUp",
+              headerShown: false,
+            }}
+          />
+          <Stack.Screen
+            name="Profile"
+            component={Profile}
+            options={{
+              title: "Profile",
+              headerShown: false,
+              // gestureEnabled: false,
+            }}
+          /> */
+}

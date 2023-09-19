@@ -10,10 +10,10 @@ import {
 import { useFonts } from "expo-font";
 import AppLoading from "expo-app-loading";
 import { useEffect, useState } from "react";
-import CustomButton from "./src/components/customButton";
-import { signInUser, getUser, signOutUser } from "./src/config/Database";
+import CustomButton from "./components/customButton";
+import { signInUser, getUser, signOutUser } from "./config/Database";
 
-export default function Home({ navigation }) {
+export default function Login({ handleUserLogin, navigation }) {
   const [loaded] = useFonts({
     "FiraCode-Regular": require("./assets/fonts/FiraCode-Regular.ttf"),
     "FiraCode-Bold": require("./assets/fonts/FiraCode-Bold.ttf"),
@@ -24,12 +24,14 @@ export default function Home({ navigation }) {
 
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [isLoggedIn, setIsLoggedIn] = useState(false);
+  // const [isLoggedIn, setIsLoggedIn] = useState(false);
 
   useEffect(() => {
-    const fetchUser = async () => {
-      const email = await getUser();
-      setEmail(email);
+    const fetchUser = () => {
+      const email = getUser();
+      if (email) {
+        setEmail(email);
+      }
     };
     fetchUser();
   }, []);
@@ -43,26 +45,18 @@ export default function Home({ navigation }) {
       const success = await signInUser(email, password);
       if (success) {
         console.log("user is signed in");
-        setIsLoggedIn(true);
-        navigation.navigate("Profile");
+        // setIsLoggedIn(true);
+        handleUserLogin();
+        // navigation.navigate("Profile");
       } else {
         console.log("user is not signed in");
-        setIsLoggedIn(false);
+        // setIsLoggedIn(false);
       }
     } catch (error) {
       console.log("login error: " + error);
     }
     setEmail("");
     setPassword("");
-  };
-
-  const handleLogout = () => {
-    try {
-      signOutUser();
-      setIsLoggedIn(false);
-    } catch (error) {
-      console.log("logout error: " + error);
-    }
   };
 
   return (
@@ -89,46 +83,39 @@ export default function Home({ navigation }) {
           </Text>
         </Text>
       </View>
-      {isLoggedIn ? (
+
+      <View>
+        <TextInput
+          style={styles.input}
+          placeholder="Enter your email"
+          onChangeText={(text) => setEmail(text)}
+          value={email}
+        />
+
+        <TextInput
+          style={styles.input}
+          placeholder="Enter your password"
+          secureTextEntry={true} // To hide the entered text
+          onChangeText={(text) => setPassword(text)}
+          value={password}
+        />
+
         <CustomButton
-          text="Logout"
-          onPress={handleLogout}
+          text="Login"
+          onPress={handleLogin}
           textColor="white"
           bgColor={"#8F5AFF"}
         />
-      ) : (
-        <View>
-          <TextInput
-            style={styles.input}
-            placeholder="Enter your email"
-            onChangeText={(text) => setEmail(text)}
-            value={email}
-          />
-
-          <TextInput
-            style={styles.input}
-            placeholder="Enter your password"
-            secureTextEntry={true} // To hide the entered text
-            onChangeText={(text) => setPassword(text)}
-            value={password}
-          />
-
-          <CustomButton
-            text="Login"
-            onPress={handleLogin}
-            textColor="white"
-            bgColor={"#8F5AFF"}
-          />
-          <Text style={styles.signup}>
-            Dont have an account?{"\n"}
-            <Text
-              style={{ textDecorationLine: "underline" }}
-              onPress={() => navigation.navigate("SignUp")}>
-              sign up here
-            </Text>
+        <Text style={styles.signup}>
+          Dont have an account?{"\n"}
+          <Text
+            style={{ textDecorationLine: "underline" }}
+            onPress={() => navigation.navigate("SignUp")}>
+            sign up here
           </Text>
-        </View>
-      )}
+        </Text>
+      </View>
+      {/* )} */}
     </View>
   );
 }

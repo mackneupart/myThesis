@@ -1,20 +1,34 @@
-import { doc, getDoc, setDoc } from "firebase/firestore";
+import {
+  doc,
+  getDoc,
+  setDoc,
+  collection,
+  query,
+  where,
+  getDocs,
+} from "firebase/firestore";
 import { db } from "./Firebase";
 import {
   getAuth,
   createUserWithEmailAndPassword,
   signInWithEmailAndPassword,
   signOut,
+  onAuthStateChanged,
 } from "firebase/auth";
 
-export const getUser = async () => {
+export const getUser = () => {
   const auth = getAuth();
-  const user = auth.currentUser;
-  if (user) {
-    return user;
-  } else {
-    console.log("No user is signed in");
-  }
+  onAuthStateChanged(auth, (user) => {
+    if (user) {
+      // User is signed im
+      const uid = user.uid;
+      console.log("User is signed in: " + uid);
+      // ...
+    } else {
+      // User is signed out
+      console.log("No user is signed in");
+    }
+  });
 };
 
 export const getUserDetails = async () => {
@@ -33,7 +47,6 @@ export const getUserDetails = async () => {
 
   try {
     const userSnap = await getDoc(userRef);
-    console.log("my userSnap " + userSnap.exists());
     if (userSnap.exists()) {
       const userData = userSnap.data();
       console.log("Document data:", userData);
@@ -98,6 +111,9 @@ export const signInUser = async (email, password) => {
       case "auth/invalid-email":
         alert("Invalid email address");
         break;
+      case "auth/invalid-login-credentials":
+        alert("email and password does not match, try again");
+        break;
       default:
         console.log("Couldn't log in, try again");
         alert("Couldn't log in, try again");
@@ -117,5 +133,28 @@ export const signOutUser = async () => {
   } catch (error) {
     console.log("Error signing out: " + error.code);
     return false;
+  }
+};
+
+export const getStoriesForUser = async () => {
+  const auth = getAuth();
+  const user = auth.currentUser;
+  const userID = user.uid;
+  const storiesCollection = collection(db, "stories");
+  const q = query(storiesCollection, where("userID", "==", userID));
+
+  try {
+    const querySnapshot = await getDocs(q);
+    const stories = [];
+
+    querySnapshot.forEach((doc) => {
+      // Extract data from the document
+      const storyData = doc.data();
+      stories.push(storyData);
+    });
+    return stories;
+  } catch (error) {
+    console.error("Error getting stories:", error);
+    return [];
   }
 };

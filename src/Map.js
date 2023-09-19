@@ -2,7 +2,7 @@ import { StatusBar } from "expo-status-bar";
 import { useState, useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import MapView, { Marker, Callout } from "react-native-maps";
-import data from "./data.json";
+import data from "../data.json";
 import * as Location from "expo-location";
 
 export default function Map({ navigation }) {
