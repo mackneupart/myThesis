@@ -53,7 +53,6 @@ export default function Map({ navigation }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.textHeader}>This is a map</Text>
       <MapView
         style={styles.map}
         //specify our coordinates.
@@ -82,6 +81,9 @@ export default function Map({ navigation }) {
           />
         )}
       </MapView>
+      <View style={styles.logoBox}>
+        <Text style={styles.logoText}>Queer Fortællinger</Text>
+      </View>
     </View>
   );
 }
@@ -90,7 +92,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    alignItems: "center",
     fontSize: 30,
   },
   textHeader: {
@@ -101,5 +102,21 @@ const styles = StyleSheet.create({
   map: {
     marginTop: 80,
     ...StyleSheet.absoluteFillObject,
+  },
+  logoBox: {
+    position: "absolute",
+    backgroundColor: "lightgrey",
+    height: 110,
+    marginTop: 60,
+    width: 320,
+    borderRadius: 10,
+  },
+  logoText: {
+    position: "absolute",
+    marginTop: 10,
+    fontSize: 25,
+    fontWeight: "bold",
+    color: "#8F5AFF",
+    padding: 30,
   },
 });

@@ -2,6 +2,8 @@ import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Map from "../Map";
 import Profile from "../Profile";
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
+import CustomTabBarButton from "./CustomTabBarButton";
+import PopUpAdd from "./PopUpAdd";
 
 const Tab = createBottomTabNavigator();
 
@@ -17,7 +19,7 @@ export default function NavigationTab({ handleUserLogout }) {
           left: 20,
           right: 20,
           elevation: 0,
-          borderRadius: 15,
+          borderRadius: 10,
           height: 90,
           ...style.shadow,
         },
@@ -35,16 +37,38 @@ export default function NavigationTab({ handleUserLogout }) {
                 style={{
                   width: 30,
                   height: 30,
-                  tintColor: focused ? "blue" : "grey",
+                  tintColor: focused ? "#8F5AFF" : "grey",
                 }}
               />
-              <Text style={{ color: focused ? "blue" : "grey", fontSize: 18 }}>
+              <Text
+                style={{ color: focused ? "#8F5AFF" : "grey", fontSize: 18 }}>
                 MAP
               </Text>
             </View>
           ),
         }}
       />
+      <Tab.Screen
+        name="Add"
+        component={Map}
+        options={{
+          headerShown: false,
+
+          tabBarIcon: ({ focused }) => (
+            <Image
+              source={require("../assets/icons/plus.png")}
+              resizeMode="contain"
+              style={{
+                width: 60,
+                height: 60,
+                tintColor: "#8F5AFF",
+              }}
+            />
+          ),
+          tabBarButton: () => <PopUpAdd />, // You were missing parentheses here
+        }}
+      />
+
       <Tab.Screen
         name="Profile"
         options={{
@@ -57,10 +81,11 @@ export default function NavigationTab({ handleUserLogout }) {
                 style={{
                   width: 30,
                   height: 30,
-                  tintColor: focused ? "blue" : "grey",
+                  tintColor: focused ? "#8F5AFF" : "grey",
                 }}
               />
-              <Text style={{ color: focused ? "blue" : "grey", fontSize: 18 }}>
+              <Text
+                style={{ color: focused ? "#8F5AFF" : "grey", fontSize: 18 }}>
                 PROFILE
               </Text>
             </View>

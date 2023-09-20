@@ -3,6 +3,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Login from "./src/Login";
 import Map from "./src/Map";
+import SignUp from "./src/SignUp";
 import NavigationTab from "./src/components/NavigationTab"; // Import the NavigationTab component
 import { getUser } from "./src/config/Database";
 import { useEffect, useState } from "react";
@@ -59,7 +60,13 @@ export default function App() {
             <Stack.Screen
               name="Map"
               component={Map}
-              options={{ title: "Map" }}
+              options={{ title: "Map", headerShown: false }}
+              headerShown={false}
+            />
+            <Stack.Screen
+              name="SignUp"
+              component={SignUp}
+              options={{ title: "SignUp", headerShown: false }}
               headerShown={false}
             />
           </>

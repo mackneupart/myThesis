@@ -1,9 +1,9 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet } from "react-native";
 import CustomButton from "./components/customButton";
-import { addUser, registerUser } from "./config/Database";
+import { registerUser } from "./config/Database";
 
-const SignUp = ({ navigation }) => {
+export default function SignUp({ navigation }) {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -17,7 +17,7 @@ const SignUp = ({ navigation }) => {
     try {
       const success = await registerUser(email, password, username);
       if (success) {
-        navigation.navigate("Profile");
+        navigation.navigate("Login");
       }
     } catch (error) {
       console.log(error);
@@ -73,13 +73,13 @@ const SignUp = ({ navigation }) => {
         Already have an account?{"\n"}
         <Text
           style={{ textDecorationLine: "underline" }}
-          onPress={() => navigation.navigate("Home")}>
+          onPress={() => navigation.navigate("Login")}>
           Login
         </Text>
       </Text>
     </View>
   );
-};
+}
 
 const styles = StyleSheet.create({
   container: {
@@ -121,5 +121,3 @@ const styles = StyleSheet.create({
     fontFamily: "FiraCode-Regular",
   },
 });
-
-export default SignUp;

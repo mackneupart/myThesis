@@ -1,17 +1,9 @@
-import {
-  Button,
-  StyleSheet,
-  Text,
-  View,
-  Image,
-  TextInput,
-  ScrollView,
-} from "react-native";
+import { StyleSheet, Text, View, Image, TextInput } from "react-native";
 import { useFonts } from "expo-font";
 import AppLoading from "expo-app-loading";
 import { useEffect, useState } from "react";
 import CustomButton from "./components/customButton";
-import { signInUser, getUser, signOutUser } from "./config/Database";
+import { signInUser, getUser } from "./config/Database";
 
 export default function Login({ handleUserLogin, navigation }) {
   const [loaded] = useFonts({
