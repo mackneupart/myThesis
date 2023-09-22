@@ -7,6 +7,7 @@ import SignUp from "./src/SignUp";
 import NavigationTab from "./src/components/NavigationTab"; // Import the NavigationTab component
 import { getUser } from "./src/config/Database";
 import { useEffect, useState } from "react";
+import Story from "./src/Story";
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -45,11 +46,24 @@ export default function App() {
     <NavigationContainer>
       <Stack.Navigator>
         {isLoggedIn ? (
-          <Stack.Screen name="navigation" options={{ headerShown: false }}>
-            {(props) => (
-              <NavigationTab {...props} handleUserLogout={handleUserLogout} />
-            )}
-          </Stack.Screen>
+          <>
+            <Stack.Screen name="navigation" options={{ headerShown: false }}>
+              {(props) => (
+                <NavigationTab {...props} handleUserLogout={handleUserLogout} />
+              )}
+            </Stack.Screen>
+            <Stack.Screen
+              name="Story"
+              component={Story}
+              options={{ title: "Story" }}
+            />
+            <Stack.Screen
+              name="Map"
+              component={Map}
+              options={{ title: "Map", headerShown: false }}
+              headerShown={false}
+            />
+          </>
         ) : (
           <>
             <Stack.Screen name="Login" options={{ headerShown: false }}>

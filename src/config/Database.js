@@ -6,6 +6,8 @@ import {
   query,
   where,
   getDocs,
+  addDoc,
+  deleteDoc,
 } from "firebase/firestore";
 import { db } from "./Firebase";
 import {
@@ -156,5 +158,74 @@ export const getStoriesForUser = async () => {
   } catch (error) {
     console.error("Error getting stories:", error);
     return [];
+  }
+};
+
+export const saveStory = async (story) => {
+  const auth = getAuth();
+  const user = auth.currentUser;
+  const userID = user.uid;
+  const storiesCollection = collection(db, "stories");
+
+  try {
+    if (!story.title || !story.description || !story.coordinates) {
+      throw new Error("Invalid story data");
+    }
+    // Create a Firestore transaction
+    const newStoryRef = doc(storiesCollection);
+    const storyID = newStoryRef.id;
+    console.log("New story ID:", storyID);
+    await addDoc(storiesCollection, {
+      title: story.title,
+      userID: userID,
+      description: story.description,
+      coordinates: story.coordinates,
+      storyID: storyID,
+    });
+
+    return true;
+  } catch (error) {
+    console.error("Error saving story:", error);
+    return false;
+  }
+};
+
+export const getAllStories = async () => {
+  const storiesCollection = collection(db, "stories");
+
+  try {
+    const querySnapshot = await getDocs(storiesCollection);
+    const stories = [];
+
+    querySnapshot.forEach((doc) => {
+      // Extract data from the document
+      const storyData = doc.data();
+      stories.push(storyData);
+    });
+    return stories;
+  } catch (error) {
+    console.error("Error getting stories:", error);
+    return [];
+  }
+};
+
+export const deleteStory = async (storyID) => {
+  const storiesCollection = collection(db, "stories");
+  try {
+    // Create a query to find the story with the matching storyID
+    const q = query(storiesCollection, where("storyID", "==", storyID));
+
+    // Get the documents that match the query
+    const querySnapshot = await getDocs(q);
+
+    // Delete each document that matches the query
+    querySnapshot.forEach(async (doc) => {
+      await deleteDoc(doc(storiesCollection, doc.id));
+    });
+
+    return true;
+  } catch (error) {
+    console.error("Error deleting story:", error);
+    return false;
   }
 };

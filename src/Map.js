@@ -1,12 +1,14 @@
 import { StatusBar } from "expo-status-bar";
-import { useState, useEffect } from "react";
+import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View } from "react-native";
 import MapView, { Marker, Callout } from "react-native-maps";
-import data from "../data.json";
 import * as Location from "expo-location";
+import { getAllStories } from "./config/Database";
+import { useFocusEffect } from "@react-navigation/native";
 
 export default function Map({ navigation }) {
   const [currentLocation, setCurrentLocation] = useState(null);
+  const [stories, setStories] = useState([]);
 
   useEffect(() => {
     const requestLocationPermission = async () => {
@@ -33,22 +35,22 @@ export default function Map({ navigation }) {
     getCurrentLocation();
   }, []);
 
+  useFocusEffect(
+    React.useCallback(() => {
+      const getStories = async () => {
+        const stories = await getAllStories();
+        setStories(stories);
+      };
+      getStories();
+    }, [])
+  );
+
   useEffect(() => {
     console.log("Current Location:", currentLocation);
   }, [currentLocation]);
 
-  const Halmtorvet = {
-    latitude: 55.6699,
-    longitude: 12.5595,
-    latitudeDelta: 0.01,
-    longitudeDelta: 0.01,
-  };
-
-  const handlePress = () => {
-    alert("You pressed the marker!");
-  };
-  const handleMarkerPress = (marker) => {
-    navigation.navigate("About", { marker });
+  const handleMarkerPress = (story) => {
+    navigation.navigate("Story", { story });
   };
 
   return (
@@ -62,14 +64,17 @@ export default function Map({ navigation }) {
           latitudeDelta: 0.0922,
           longitudeDelta: 0.0421,
         }}>
-        {data.map((marker, index) => (
+        {stories.map((story, index) => (
           <Marker
             key={index}
-            coordinate={marker.coordinates}
-            pinColor={marker.pinColor}
-            title={marker.name}>
-            <Callout onPress={() => handleMarkerPress(marker)}>
-              <Text>{marker.name}</Text>
+            coordinate={{
+              latitude: story.coordinates[0],
+              longitude: story.coordinates[1],
+            }}
+            pinColor={story.pinColor}
+            title={story.title}>
+            <Callout onPress={() => handleMarkerPress(story)}>
+              <Text>{story.title}</Text>
             </Callout>
           </Marker>
         ))}

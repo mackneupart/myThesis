@@ -34,7 +34,7 @@ export default function PopUpAdd() {
         animationType="slide"
         style={styles.modal}>
         <View style={styles.modalContent}>
-          <AddStory />
+          <AddStory onClose={closePopup} />
           <TouchableOpacity onPress={closePopup} style={styles.closeButton}>
             <Text>Close</Text>
           </TouchableOpacity>
@@ -67,7 +67,7 @@ const styles = StyleSheet.create({
   },
   closeButton: {
     position: "absolute",
-    top: 50,
-    right: 30,
+    top: 60,
+    right: 20,
   },
 });

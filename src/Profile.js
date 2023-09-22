@@ -1,34 +1,42 @@
-import { Marker } from "react-native-maps";
-import { StyleSheet, Text, View, ScrollView } from "react-native";
 import {
-  getUser,
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  TouchableOpacity,
+} from "react-native";
+import {
   getUserDetails,
   signOutUser,
   getStoriesForUser,
+  deleteStory,
 } from "./config/Database";
-import { useEffect, useState } from "react";
+import React, { useState } from "react";
+import { useFocusEffect } from "@react-navigation/native";
 import CustomButton from "./components/customButton";
 
-export default function Profile({ handleUserLogout }) {
+export default function Profile({ handleUserLogout, navigation }) {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [stories, setUserStories] = useState([]);
 
-  useEffect(() => {
-    const fetchUserDetails = async () => {
-      const user = await getUserDetails();
-      setUsername(user.username);
-      setEmail(user.email);
-    };
+  useFocusEffect(
+    React.useCallback(() => {
+      const fetchUserDetails = async () => {
+        const user = await getUserDetails();
+        setUsername(user.username);
+        setEmail(user.email);
+      };
 
-    const fetchUserStories = async () => {
-      const userStories = await getStoriesForUser();
-      setUserStories(userStories);
-      console.log(userStories);
-    };
-    fetchUserDetails();
-    fetchUserStories();
-  }, []);
+      const fetchUserStories = async () => {
+        const userStories = await getStoriesForUser();
+        setUserStories(userStories);
+      };
+
+      fetchUserDetails();
+      fetchUserStories();
+    }, [])
+  );
 
   const handleLogout = () => {
     try {
@@ -36,6 +44,20 @@ export default function Profile({ handleUserLogout }) {
       handleUserLogout();
     } catch (error) {
       console.log("logout error: " + error);
+    }
+  };
+
+  const handleNavigation = (story) => {
+    navigation.navigate("Story", { story });
+  };
+
+  const handleDelete = async (story) => {
+    try {
+      await deleteStory(story.storyID);
+      // const userStories = await getStoriesForUser();
+      // setUserStories(userStories);
+    } catch (error) {
+      console.log("Error deleting story: " + error);
     }
   };
 
@@ -55,21 +77,29 @@ export default function Profile({ handleUserLogout }) {
           bgColor={"#8F5AFF"}
         />
       </View>
-      <ScrollView style={styles.scrollContainer}>
-        <Text style={styles.textHeader}>Contributions</Text>
-        <View>
-          {stories.map((story) => (
-            <>
-              <Text style={styles.textViews}>{story.title}</Text>
-              <Text style={styles}>
-                {story.description}, {story.coordinates[0]}
-                {"\n"}
-                {story.coordinates[1]}
-              </Text>
-            </>
-          ))}
-        </View>
-      </ScrollView>
+      <View style={styles.scrollContainer}>
+        <ScrollView
+          contentContainerStyle={{ paddingBottom: 100 }} // Add some padding to the bottom
+        >
+          <Text style={styles.textHeader}>Contributions</Text>
+          <View>
+            {stories.map((story, index) => (
+              <View key={`story-${index}`}>
+                <TouchableOpacity style={{ width: 200 }}>
+                  <Text
+                    style={styles.textTitle}
+                    onPress={() => handleNavigation(story)}>
+                    {story.title}{" "}
+                  </Text>
+                </TouchableOpacity>
+                <TouchableOpacity>
+                  <Text onPress={() => handleDelete(story)}>Delete</Text>
+                </TouchableOpacity>
+              </View>
+            ))}
+          </View>
+        </ScrollView>
+      </View>
     </View>
   );
 }
@@ -83,6 +113,7 @@ const styles = StyleSheet.create({
 
   scrollContainer: {
     alignSelf: "center",
+    flex: 1,
   },
 
   userDetails: {
@@ -106,8 +137,10 @@ const styles = StyleSheet.create({
     marginTop: 50,
     fontSize: 50,
   },
-  textViews: {
+  textTitle: {
     marginTop: 20,
     fontSize: 30,
+    borderColor: "#8F5AFF",
+    borderWidth: 1,
   },
 });
