@@ -53,9 +53,10 @@ export default function Profile({ handleUserLogout, navigation }) {
 
   const handleDelete = async (story) => {
     try {
+      console.log(story.storyID);
       await deleteStory(story.storyID);
-      // const userStories = await getStoriesForUser();
-      // setUserStories(userStories);
+      const userStories = await getStoriesForUser();
+      setUserStories(userStories);
     } catch (error) {
       console.log("Error deleting story: " + error);
     }

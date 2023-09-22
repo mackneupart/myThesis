@@ -219,10 +219,10 @@ export const deleteStory = async (storyID) => {
     const querySnapshot = await getDocs(q);
 
     // Delete each document that matches the query
+    // Delete each document that matches the query
     querySnapshot.forEach(async (doc) => {
-      await deleteDoc(doc(storiesCollection, doc.id));
+      await deleteDoc(doc.ref); // Use doc.ref to get the document reference
     });
-
     return true;
   } catch (error) {
     console.error("Error deleting story:", error);
