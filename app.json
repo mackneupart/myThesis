@@ -23,8 +23,12 @@
         "backgroundColor": "#ffffff"
       }
     },
-    "web": {
-      "favicon": "./assets/favicon.png"
+    "plugins": {
+      "expo-camera": {
+        "permissions": [
+          "camera"
+        ]
+      }
     }
   }
 }

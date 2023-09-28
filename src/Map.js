@@ -1,14 +1,16 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import MapView, { Marker, Callout } from "react-native-maps";
 import * as Location from "expo-location";
-import { getAllStories } from "./config/Database";
+import { getAllStories, getUser, getUserDetails } from "./config/Database";
 import { useFocusEffect } from "@react-navigation/native";
+import PopUpAdd from "./components/PopUpAdd";
 
 export default function Map({ navigation }) {
-  const [currentLocation, setCurrentLocation] = useState(null);
+  const [currentLocation, setCurrentLocation] = useState(undefined);
   const [stories, setStories] = useState([]);
+  const [username, setUsername] = useState(null);
 
   useEffect(() => {
     const requestLocationPermission = async () => {
@@ -17,7 +19,15 @@ export default function Map({ navigation }) {
         console.log("Location permission denied");
       }
     };
-
+    const fetchUserDetails = async () => {
+      try {
+        const user = await getUserDetails();
+        setUsername(user.username);
+      } catch (error) {
+        setUsername(null); // Set username to null in case of an error
+      }
+    };
+    fetchUserDetails();
     requestLocationPermission();
   }, []);
 
@@ -89,6 +99,13 @@ export default function Map({ navigation }) {
       <View style={styles.logoBox}>
         <Text style={styles.logoText}>Queer Fortællinger</Text>
       </View>
+      {username ? (
+        <View style={styles.addButtonContainer}>
+          <PopUpAdd />
+        </View>
+      ) : (
+        <Text>failll</Text>
+      )}
     </View>
   );
 }
@@ -99,6 +116,7 @@ const styles = StyleSheet.create({
     backgroundColor: "#fff",
     fontSize: 30,
   },
+
   textHeader: {
     marginTop: 20,
     fontSize: 30,
@@ -109,10 +127,10 @@ const styles = StyleSheet.create({
     ...StyleSheet.absoluteFillObject,
   },
   logoBox: {
+    marginTop: 60,
     position: "absolute",
     backgroundColor: "lightgrey",
     height: 110,
-    marginTop: 60,
     width: 320,
     borderRadius: 10,
   },
@@ -123,5 +141,12 @@ const styles = StyleSheet.create({
     fontWeight: "bold",
     color: "#8F5AFF",
     padding: 30,
+  },
+  addButtonContainer: {
+    position: "absolute",
+    bottom: 90,
+    left: 0,
+    right: 10,
+    alignItems: "flex-end",
   },
 });

@@ -8,6 +8,10 @@ import NavigationTab from "./src/components/NavigationTab"; // Import the Naviga
 import { getUser } from "./src/config/Database";
 import { useEffect, useState } from "react";
 import Story from "./src/Story";
+import CameraScreen from "./src/components/CameraComponent";
+import AddPhoto from "./src/components/AddPhoto";
+import PopUpAdd from "./src/components/PopUpAdd";
+
 const Stack = createNativeStackNavigator();
 
 export default function App() {
@@ -61,7 +65,12 @@ export default function App() {
               name="Map"
               component={Map}
               options={{ title: "Map", headerShown: false }}
-              headerShown={false}
+            />
+            <Stack.Screen name="Camera" component={CameraScreen} />
+            <Stack.Screen
+              name="AddPhoto"
+              component={AddPhoto}
+              options={{ title: "Map", headerShown: false }}
             />
           </>
         ) : (
@@ -74,7 +83,7 @@ export default function App() {
             <Stack.Screen
               name="Map"
               component={Map}
-              options={{ title: "Map", headerShown: false }}
+              options={{ title: "Map", headerShown: true }}
               headerShown={false}
             />
             <Stack.Screen
@@ -82,6 +91,11 @@ export default function App() {
               component={SignUp}
               options={{ title: "SignUp", headerShown: false }}
               headerShown={false}
+            />
+            <Stack.Screen
+              name="Story"
+              component={Story}
+              options={{ title: "Story" }}
             />
           </>
         )}

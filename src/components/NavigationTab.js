@@ -1,6 +1,7 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import Map from "../Map";
 import Profile from "../Profile";
+import Feed from "../Feed";
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import CustomTabBarButton from "./CustomTabBarButton";
 import PopUpAdd from "./PopUpAdd";
@@ -25,6 +26,30 @@ export default function NavigationTab({ handleUserLogout }) {
         },
       }}>
       <Tab.Screen
+        name="Feed"
+        component={Feed}
+        options={{
+          headerShown: false,
+          tabBarIcon: ({ focused }) => (
+            <View style={{ alignItems: "center", marginTop: 25 }}>
+              <Image
+                source={require("../assets/icons/story.png")}
+                resizeMode="contain"
+                style={{
+                  width: 30,
+                  height: 30,
+                  tintColor: focused ? "#8F5AFF" : "grey",
+                }}
+              />
+              <Text
+                style={{ color: focused ? "#8F5AFF" : "grey", fontSize: 14 }}>
+                FEED
+              </Text>
+            </View>
+          ),
+        }}
+      />
+      <Tab.Screen
         name="Map"
         component={Map}
         options={{
@@ -41,7 +66,7 @@ export default function NavigationTab({ handleUserLogout }) {
                 }}
               />
               <Text
-                style={{ color: focused ? "#8F5AFF" : "grey", fontSize: 18 }}>
+                style={{ color: focused ? "#8F5AFF" : "grey", fontSize: 14 }}>
                 MAP
               </Text>
             </View>
@@ -49,34 +74,14 @@ export default function NavigationTab({ handleUserLogout }) {
         }}
       />
       <Tab.Screen
-        name="Add"
+        name="Info"
         component={Map}
-        options={{
-          headerShown: false,
-
-          tabBarIcon: ({ focused }) => (
-            <Image
-              source={require("../assets/icons/plus.png")}
-              resizeMode="contain"
-              style={{
-                width: 60,
-                height: 60,
-                tintColor: "#8F5AFF",
-              }}
-            />
-          ),
-          tabBarButton: () => <PopUpAdd />, // You were missing parentheses here
-        }}
-      />
-
-      <Tab.Screen
-        name="Profile"
         options={{
           headerShown: false,
           tabBarIcon: ({ focused }) => (
             <View style={{ alignItems: "center", marginTop: 25 }}>
               <Image
-                source={require("../assets/icons/user.png")}
+                source={require("../assets/icons/info.png")}
                 resizeMode="contain"
                 style={{
                   width: 30,
@@ -85,7 +90,30 @@ export default function NavigationTab({ handleUserLogout }) {
                 }}
               />
               <Text
-                style={{ color: focused ? "#8F5AFF" : "grey", fontSize: 18 }}>
+                style={{ color: focused ? "#8F5AFF" : "grey", fontSize: 14 }}>
+                INFO
+              </Text>
+            </View>
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Profile"
+        options={{
+          headerShown: false,
+          tabBarIcon: ({ focused }) => (
+            <View style={{ alignItems: "center", marginTop: 25 }}>
+              <Image
+                source={require("../assets/icons/profile.png")}
+                resizeMode="contain"
+                style={{
+                  width: 30,
+                  height: 30,
+                  tintColor: focused ? "#8F5AFF" : "grey",
+                }}
+              />
+              <Text
+                style={{ color: focused ? "#8F5AFF" : "grey", fontSize: 14 }}>
                 PROFILE
               </Text>
             </View>

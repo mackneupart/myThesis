@@ -25,10 +25,12 @@ export const getUser = () => {
       // User is signed im
       const uid = user.uid;
       console.log("User is signed in: " + uid);
+      return uid;
       // ...
     } else {
       // User is signed out
       console.log("No user is signed in");
+      return null;
     }
   });
 };
@@ -166,6 +168,7 @@ export const saveStory = async (story) => {
   const user = auth.currentUser;
   const userID = user.uid;
   const storiesCollection = collection(db, "stories");
+  const userData = await getUserDetails();
 
   try {
     if (!story.title || !story.description || !story.coordinates) {
@@ -181,6 +184,8 @@ export const saveStory = async (story) => {
       description: story.description,
       coordinates: story.coordinates,
       storyID: storyID,
+      createdAt: new Date(),
+      author: userData.username,
     });
 
     return true;

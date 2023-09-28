@@ -58,12 +58,12 @@ export default function Login({ handleUserLogin, navigation }) {
         A digital archive of queer stories {"\n"} made for and created by fellow
         queers
       </Text>
-      <View>
+      {/* <View>
         <Image
           source={require("./assets/icons/cph-map.png")} // Replace with the actual image path
           style={{ width: 200, height: 200 }} // Set the desired width and height
         />
-      </View>
+      </View> */}
 
       <View>
         <Text style={styles.textViews}>
@@ -115,8 +115,9 @@ export default function Login({ handleUserLogin, navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "lightgrey",
     alignItems: "center",
+    justifyContent: "center",
     fontSize: 30,
   },
   textHeader: {
@@ -135,9 +136,10 @@ const styles = StyleSheet.create({
   input: {
     borderWidth: 1,
     borderColor: "#ccc",
+    backgroundColor: "#fff",
     borderRadius: 15,
     padding: 10,
-    width: "80%",
+    width: 200,
     marginBottom: 15,
     fontSize: 16,
   },
@@ -145,5 +147,6 @@ const styles = StyleSheet.create({
     marginTop: 20,
     fontFamily: "KaiseiTokumin-Regular",
     textAlign: "center",
+    marginBottom: 200,
   },
 });

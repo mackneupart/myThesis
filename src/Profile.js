@@ -14,11 +14,14 @@ import {
 import React, { useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import CustomButton from "./components/customButton";
+import ConfirmationModal from "./components/ConfirmationModal"; // Import the ConfirmationModal component
 
 export default function Profile({ handleUserLogout, navigation }) {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
   const [stories, setUserStories] = useState([]);
+  const [selectedStory, setSelectedStory] = useState(null);
+  const [isModalVisible, setIsModalVisible] = useState(false);
 
   useFocusEffect(
     React.useCallback(() => {
@@ -51,15 +54,26 @@ export default function Profile({ handleUserLogout, navigation }) {
     navigation.navigate("Story", { story });
   };
 
-  const handleDelete = async (story) => {
+  const handleDelete = (story) => {
+    setSelectedStory(story);
+    setIsModalVisible(true);
+  };
+  const handleConfirmDelete = async () => {
     try {
-      console.log(story.storyID);
-      await deleteStory(story.storyID);
-      const userStories = await getStoriesForUser();
-      setUserStories(userStories);
+      if (selectedStory) {
+        await deleteStory(selectedStory.storyID);
+        const userStories = await getStoriesForUser();
+        setUserStories(userStories);
+      }
     } catch (error) {
       console.log("Error deleting story: " + error);
+    } finally {
+      setIsModalVisible(false); // Close the modal
     }
+  };
+  const handleCancelDelete = () => {
+    setSelectedStory(null); // Clear the selected story
+    setIsModalVisible(false); // Close the modal
   };
 
   return (
@@ -85,22 +99,30 @@ export default function Profile({ handleUserLogout, navigation }) {
           <Text style={styles.textHeader}>Contributions</Text>
           <View>
             {stories.map((story, index) => (
-              <View key={`story-${index}`}>
-                <TouchableOpacity style={{ width: 200 }}>
+              <View key={`story-${index}`} style={styles.storyContainer}>
+                <TouchableOpacity>
                   <Text
                     style={styles.textTitle}
                     onPress={() => handleNavigation(story)}>
                     {story.title}{" "}
                   </Text>
                 </TouchableOpacity>
-                <TouchableOpacity>
-                  <Text onPress={() => handleDelete(story)}>Delete</Text>
+                <TouchableOpacity
+                  onPress={() => handleDelete(story)}
+                  style={styles.deleteButton}>
+                  <Text style={styles.deleteButtonText}>Delete</Text>
                 </TouchableOpacity>
               </View>
             ))}
           </View>
         </ScrollView>
       </View>
+      <ConfirmationModal
+        visible={isModalVisible}
+        onConfirm={handleConfirmDelete}
+        onCancel={handleCancelDelete}
+        text="Are you sure you want to delete this story?"
+      />
     </View>
   );
 }
@@ -141,7 +163,24 @@ const styles = StyleSheet.create({
   textTitle: {
     marginTop: 20,
     fontSize: 30,
+  },
+  storyContainer: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
+    padding: 10,
+    borderBottomWidth: 1,
     borderColor: "#8F5AFF",
-    borderWidth: 1,
+  },
+  deleteButton: {
+    alignSelf: "flex-end",
+
+    backgroundColor: "lightgrey",
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: 5,
+  },
+  deleteButtonText: {
+    color: "#8F5AFF",
   },
 });

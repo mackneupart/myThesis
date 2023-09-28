@@ -12,8 +12,6 @@ export default function SignUp({ navigation }) {
   const handleSignUp = async () => {
     console.log(email);
     console.log(password);
-    // Implement your sign-up logic here.
-    // You can send the user's data (username, email, password) to your server for registration.
     try {
       const success = await registerUser(email, password, username);
       if (success) {

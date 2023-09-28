@@ -14,16 +14,24 @@ export default function Story({ route }) {
         longitude: story.coordinates[1],
       });
       console.log(reverseGeocodeAddress);
-      setAddress(reverseGeocodeAddress[0].name);
+      setAddress(
+        reverseGeocodeAddress[0].name + ", " + reverseGeocodeAddress[0].city
+      );
     };
     reverseGeocode();
   }, []);
 
   return (
     <View style={styles.container}>
-      <Text style={styles.textHeader}>Title: {story.title}</Text>
+      <Text style={styles.textHeader}>
+        Title: {"\n"}
+        {story.title}
+      </Text>
+      <Text style={styles.textViews}>Author: {story.author}</Text>
       <Text style={styles.textViews}>Address: {address}</Text>
-      <Text style={styles.textViews}>Description: {story.description}</Text>
+      <ScrollView>
+        <Text style={styles.textViews}>Description: {story.description}</Text>
+      </ScrollView>
     </View>
   );
 }
@@ -36,11 +44,13 @@ const styles = StyleSheet.create({
     fontSize: 40,
   },
   textHeader: {
+    fontFamily: "KaiseiTokumin-Regular",
     marginTop: 20,
     fontSize: 50,
     color: "blue",
   },
   textViews: {
+    fontFamily: "KaiseiTokumin-Regular",
     marginTop: 20,
     fontSize: 30,
   },

@@ -11,15 +11,18 @@ import { useState, useEffect } from "react";
 import CustomButton from "./customButton";
 import * as Location from "expo-location";
 import { saveStory } from "../config/Database";
-import { useNavigation } from "@react-navigation/native"; // Import useNavigation
+import CameraComponent from "./CameraComponent";
+import { storage, storageRef } from "../config/Firebase";
+import AddPhoto from "./AddPhoto";
 
-export default function AddStory({ onClose }) {
+export default function AddStory({ onClose, navigation }) {
   const [title, settitle] = useState("");
   const [description, setDescription] = useState("");
   const [latitude, setLatitude] = useState(0);
   const [longitude, setLongitude] = useState(0);
   const [currentLocation, setCurrentLocation] = useState(null);
   const [textLocation, setTextLocation] = useState("");
+  const [capturedMedia, setCapturedMedia] = useState(null); // State to store captured media URI
 
   useEffect(() => {
     const getCurrentLocation = async () => {
@@ -36,16 +39,7 @@ export default function AddStory({ onClose }) {
 
   useEffect(() => {
     console.log("Current Location:", currentLocation);
-    // if (currentLocation !== null) {
-    //   setLatitude(currentLocation.latitude);
-    //   setLongitude(currentLocation.longitude);
-    // }
   }, [currentLocation]);
-
-  const dismissKeyboard = () => {
-    // Handle the "Done" button press
-    Keyboard.dismiss(); // Close the keyboard
-  };
 
   useEffect(() => {
     const geoCodeLocation = async () => {
@@ -92,10 +86,40 @@ export default function AddStory({ onClose }) {
     }
   };
 
+  const dismissKeyboard = () => {
+    // Handle the "Done" button press
+    Keyboard.dismiss(); // Close the keyboard
+  };
+
+  const uploadPhotoToStorage = async (uri) => {
+    const fileName = `photos/${Date.now()}.jpg`;
+    const photoRef = storageRef.child(fileName);
+
+    const response = await fetch(uri);
+    const blob = await response.blob();
+
+    try {
+      await photoRef.put(blob);
+      const downloadURL = await photoRef.getDownloadURL();
+      console.log("Photo uploaded to:", downloadURL);
+      setPhotoUri(downloadURL); // Store the photo URL in state
+    } catch (error) {
+      console.error("Error uploading photo:", error);
+    }
+  };
+  const handleCapture = (uri) => {
+    setCapturedMedia(uri);
+  };
+
   return (
     <TouchableWithoutFeedback onPress={dismissKeyboard}>
       <View style={styles.container}>
         <Text style={styles.textHeader}>Add your story to the map!</Text>
+        <Text>Upload photo:</Text>
+
+        <TouchableOpacity>
+          <Text onPress={() => navigation.navigate("AddPhoto")}>Add photo</Text>
+        </TouchableOpacity>
         <Text>Title:</Text>
         <TextInput
           style={styles.input}
@@ -104,13 +128,13 @@ export default function AddStory({ onClose }) {
           value={title}
         />
         <TextInput
-          style={styles.input}
+          style={styles.inputStory}
           placeholder="Enter your story"
           onChangeText={(text) => setDescription(text)}
           value={description}
           multiline={true}
         />
-        <Text>Location:</Text>
+        <Text>Address {"(street name, city)"}:</Text>
 
         <TextInput
           style={styles.input}
@@ -124,24 +148,12 @@ export default function AddStory({ onClose }) {
 
         <Text>latitude: {latitude}</Text>
         <Text>longitude: {longitude}</Text>
-
-        <CustomButton
-          text="Submit"
-          onPress={handleSubmit}
-          textColor="white"
-          bgColor={"#8F5AFF"}
-        />
       </View>
     </TouchableWithoutFeedback>
   );
 }
 
 const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
-  },
   textHeader: {
     fontSize: 20,
     marginBottom: 40,
@@ -154,5 +166,19 @@ const styles = StyleSheet.create({
     marginBottom: 15,
     fontSize: 16,
     width: 200,
+  },
+  inputStory: {
+    borderWidth: 1,
+    borderColor: "#ccc",
+    borderRadius: 15,
+    padding: 10,
+    marginBottom: 15,
+    fontSize: 16,
+    width: 200,
+    height: 100,
+  },
+  capturedMedia: {
+    width: 50,
+    height: 50,
   },
 });
