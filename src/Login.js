@@ -53,7 +53,7 @@ export default function Login({ handleUserLogin, navigation }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.textHeader}>Queer{"\n"} Fortællinger</Text>
+      <Text style={styles.textHeader}>Queer{"\n"} Annotations</Text>
       <Text style={styles.textViews}>
         A digital archive of queer stories {"\n"} made for and created by fellow
         queers

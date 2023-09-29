@@ -63,11 +63,15 @@ export default function Feed({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.logoBox}>
-        <Text style={styles.logoText}>Queer Fortællinger</Text>
+        <Text style={styles.logoText}>Queer Annotations</Text>
       </View>
       <View style={styles.scrollContainer}>
         <ScrollView
-          contentContainerStyle={{ paddingBottom: 100 }} // Add some padding to the bottom
+          contentContainerStyle={{
+            paddingBottom: 120,
+            alignItems: "center",
+            marginRight: 50,
+          }} // Add some padding to the bottom
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
           }>
@@ -137,5 +141,6 @@ const styles = StyleSheet.create({
   },
   scrollContainer: {
     flex: 1,
+    marginBottom: 20,
   },
 });

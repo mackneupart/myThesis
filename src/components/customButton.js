@@ -1,10 +1,10 @@
 import React from "react";
 import { TouchableOpacity, Text, StyleSheet } from "react-native";
 
-const CustomButton = ({ text, onPress, bgColor, textColor }) => {
+const CustomButton = ({ text, onPress, bgColor, textColor, style }) => {
   return (
     <TouchableOpacity
-      style={[styles.button, { backgroundColor: bgColor }]}
+      style={[styles.button, { backgroundColor: bgColor }, style]}
       onPress={onPress}>
       <Text style={[styles.buttonText, { color: textColor }]}>{text}</Text>
     </TouchableOpacity>
@@ -20,7 +20,7 @@ const styles = StyleSheet.create({
     justifyContent: "center",
   },
   buttonText: {
-    fontSize: 16,
+    fontSize: 12,
     fontWeight: "bold",
   },
 });

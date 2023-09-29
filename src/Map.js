@@ -97,7 +97,7 @@ export default function Map({ navigation }) {
         )}
       </MapView>
       <View style={styles.logoBox}>
-        <Text style={styles.logoText}>Queer Fortællinger</Text>
+        <Text style={styles.logoText}>Queer Annotations</Text>
       </View>
       {username ? (
         <View style={styles.addButtonContainer}>

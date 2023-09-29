@@ -4,6 +4,7 @@ import {
   View,
   ScrollView,
   TouchableOpacity,
+  Image,
 } from "react-native";
 import {
   getUserDetails,
@@ -77,45 +78,47 @@ export default function Profile({ handleUserLogout, navigation }) {
   };
 
   return (
-    <View style={styles.container}>
+    <ScrollView style={styles.container}>
       <View style={styles.logoBox}>
-        <Text style={styles.logoText}>Queer Fortællinger</Text>
+        <Text style={styles.logoText}>Queer Annotations</Text>
       </View>
 
       <View style={styles.userDetails}>
         <Text style={styles.textHeader}>Hi, {username}!</Text>
+        <View style={styles.imageContainer}>
+          <Image
+            source={require("./assets/icons/profile.png")}
+            style={styles.profileImage}
+          />
+        </View>
+
         <Text style={styles.textViews}>Your email: {email}</Text>
         <CustomButton
           text="Logout"
           onPress={handleLogout}
           textColor="white"
           bgColor={"#8F5AFF"}
+          style={styles.customButton} // Add a customButton style here
         />
       </View>
       <View style={styles.scrollContainer}>
-        <ScrollView
-          contentContainerStyle={{ paddingBottom: 100 }} // Add some padding to the bottom
-        >
-          <Text style={styles.textHeader}>Contributions</Text>
-          <View>
-            {stories.map((story, index) => (
+        <Text style={styles.textHeader}>Contributions</Text>
+        <View>
+          {stories.map((story, index) => (
+            <TouchableOpacity
+              key={`story-${index}`}
+              onPress={() => handleNavigation(story)}>
               <View key={`story-${index}`} style={styles.storyContainer}>
-                <TouchableOpacity>
-                  <Text
-                    style={styles.textTitle}
-                    onPress={() => handleNavigation(story)}>
-                    {story.title}{" "}
-                  </Text>
-                </TouchableOpacity>
+                <Text style={styles.textTitle}>{story.title} </Text>
                 <TouchableOpacity
                   onPress={() => handleDelete(story)}
                   style={styles.deleteButton}>
                   <Text style={styles.deleteButtonText}>Delete</Text>
                 </TouchableOpacity>
               </View>
-            ))}
-          </View>
-        </ScrollView>
+            </TouchableOpacity>
+          ))}
+        </View>
       </View>
       <ConfirmationModal
         visible={isModalVisible}
@@ -123,7 +126,7 @@ export default function Profile({ handleUserLogout, navigation }) {
         onCancel={handleCancelDelete}
         text="Are you sure you want to delete this story?"
       />
-    </View>
+    </ScrollView>
   );
 }
 
@@ -132,12 +135,21 @@ const styles = StyleSheet.create({
     flex: 1,
     backgroundColor: "#fff",
     fontSize: 40,
+    marginBottom: 120,
   },
 
   scrollContainer: {
     alignSelf: "center",
     flex: 1,
   },
+  imageContainer: {
+    alignItems: "center",
+    justifyContent: "center",
+    width: 150,
+    height: 150,
+    borderWidth: 1,
+  },
+  profileImage: { width: 100, height: 100 },
 
   userDetails: {
     alignItems: "center",
@@ -162,19 +174,23 @@ const styles = StyleSheet.create({
   },
   textTitle: {
     marginTop: 20,
-    fontSize: 30,
+    fontSize: 20,
   },
   storyContainer: {
     flexDirection: "row",
-    alignItems: "center",
     justifyContent: "space-between",
     padding: 10,
-    borderBottomWidth: 1,
-    borderColor: "#8F5AFF",
+    borderWidth: 1,
+    backgroundColor: "white",
+    marginBottom: 10,
+    borderRadius: 5,
+    shadowColor: "#000", // Shadow color
+    shadowOffset: { width: 0, height: 2 }, // Shadow offset (x, y)
+    shadowOpacity: 0.2, // Shadow opacity
+    shadowRadius: 2, // Shadow radius
   },
   deleteButton: {
-    alignSelf: "flex-end",
-
+    alignSelf: "center",
     backgroundColor: "lightgrey",
     paddingHorizontal: 10,
     paddingVertical: 5,
@@ -182,5 +198,12 @@ const styles = StyleSheet.create({
   },
   deleteButtonText: {
     color: "#8F5AFF",
+  },
+  customButton: {
+    fontSize: 100,
+    padding: 10,
+    borderRadius: 10,
+    minWidth: 90,
+    marginTop: 10,
   },
 });
