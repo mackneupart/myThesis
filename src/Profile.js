@@ -133,7 +133,7 @@ export default function Profile({ handleUserLogout, navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "whitesmoke",
     fontSize: 40,
     marginBottom: 120,
   },
@@ -148,6 +148,9 @@ const styles = StyleSheet.create({
     width: 150,
     height: 150,
     borderWidth: 1,
+    borderRadius: 100,
+    borderColor: "lightgrey",
+    marginBottom: 10,
   },
   profileImage: { width: 100, height: 100 },
 

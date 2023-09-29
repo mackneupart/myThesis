@@ -97,7 +97,7 @@ export default function Feed({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "pink",
+    backgroundColor: "whitesmoke",
     fontSize: 40,
   },
 
