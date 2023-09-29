@@ -8,7 +8,6 @@ import {
 } from "react-native";
 import { getAllStories } from "./config/Database";
 import React, { useState, useEffect } from "react";
-import { useFocusEffect } from "@react-navigation/native";
 import * as Location from "expo-location";
 
 export default function Feed({ navigation }) {

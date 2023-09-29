@@ -11,6 +11,7 @@ import {
 import { useState, useEffect } from "react";
 import * as Location from "expo-location";
 import { saveStory } from "../config/Database";
+import AudioRecording from "./AudioRecording";
 
 export default function PopUpAdd() {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
@@ -20,6 +21,8 @@ export default function PopUpAdd() {
   const [longitude, setLongitude] = useState(0);
   const [currentLocation, setCurrentLocation] = useState(null);
   const [textLocation, setTextLocation] = useState("");
+  const [isTextChecked, setIsTextChecked] = useState(true);
+  const [isAudioChecked, setIsAudioChecked] = useState(false);
 
   useEffect(() => {
     const getCurrentLocation = async () => {
@@ -68,6 +71,9 @@ export default function PopUpAdd() {
     console.log(story.title, story.description, story.coordinates);
     try {
       await saveStory(story);
+      settitle("");
+      setDescription("");
+      setTextLocation("");
       setIsPopupVisible(false);
     } catch (error) {
       alert("Something went wrong with saving the story");
@@ -95,6 +101,20 @@ export default function PopUpAdd() {
   const closePopup = () => {
     setIsPopupVisible(false);
   };
+  const handleTextRadio = () => {
+    setIsTextChecked(true);
+    setIsAudioChecked(false);
+  };
+  const handleAudioRadio = () => {
+    setIsTextChecked(false);
+    setIsAudioChecked(true);
+  };
+
+  const handleAudioRecording = (audioData) => {
+    // Handle the recorded audio data here
+    // You can store it in your state or perform any necessary actions
+    console.log("Received audio data:", audioData);
+  };
   return (
     <View>
       <TouchableOpacity onPress={openPopup} style={styles.imagecontainer}>
@@ -111,6 +131,30 @@ export default function PopUpAdd() {
         onRequestClose={closePopup}>
         <View style={styles.modalContainer}>
           <View style={styles.modalContent}>
+            <View style={styles.radioButtons}>
+              <View style={styles.radioContainer}>
+                <View style={styles.radioText}>
+                  <Text>Text story:</Text>
+                </View>
+                <TouchableOpacity onPress={() => handleTextRadio()}>
+                  <View style={styles.radio}>
+                    {isTextChecked ? <Text>X</Text> : null}
+                  </View>
+                </TouchableOpacity>
+              </View>
+              <View style={styles.radioContainer}>
+                <View style={styles.radioText}>
+                  <Text>audio story:</Text>
+                </View>
+
+                <TouchableOpacity onPress={() => handleAudioRadio()}>
+                  <View style={styles.radio}>
+                    {isAudioChecked ? <Text>X</Text> : null}
+                  </View>
+                </TouchableOpacity>
+              </View>
+            </View>
+
             <Text>Title:</Text>
             <TextInput
               style={styles.input}
@@ -118,19 +162,25 @@ export default function PopUpAdd() {
               onChangeText={(text) => settitle(text)}
               value={title}
             />
+            {isTextChecked ? (
+              <View>
+                <TextInput
+                  style={styles.inputStory}
+                  placeholder="Enter your story"
+                  onChangeText={(text) => setDescription(text)}
+                  value={description}
+                  multiline={true}
+                  returnKeyType="done"
+                  onSubmitEditing={() => {
+                    console.log("Submit button pressed");
+                    Keyboard.dismiss();
+                  }}
+                />
+              </View>
+            ) : (
+              <AudioRecording />
+            )}
 
-            <TextInput
-              style={styles.inputStory}
-              placeholder="Enter your story"
-              onChangeText={(text) => setDescription(text)}
-              value={description}
-              multiline={true}
-              returnKeyType="done"
-              onSubmitEditing={() => {
-                console.log("Submit button pressed");
-                Keyboard.dismiss();
-              }}
-            />
             <Text>Address {"(street name, city)"}:</Text>
 
             <TextInput
@@ -139,12 +189,12 @@ export default function PopUpAdd() {
               onChangeText={(text) => setTextLocation(text)}
             />
 
-            <TouchableOpacity onPress={useCurrentLocation}>
+            {/* <TouchableOpacity onPress={useCurrentLocation}>
               <Text>Use current location</Text>
             </TouchableOpacity>
 
             <Text>latitude: {latitude}</Text>
-            <Text>longitude: {longitude}</Text>
+            <Text>longitude: {longitude}</Text> */}
             <View style={styles.buttonContainer}>
               <TouchableOpacity
                 style={styles.confirmButton}
@@ -240,5 +290,22 @@ const styles = StyleSheet.create({
     fontSize: 16,
     width: 200,
     height: 100,
+  },
+  radioButtons: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    marginBottom: 10,
+  },
+  radioContainer: {
+    flexDirection: "row",
+    marginLeft: 10,
+  },
+  radio: {
+    alignItems: "center",
+    justifyContent: "center",
+    borderWidth: 0.4,
+    height: 16,
+    width: 16,
+    borderRadius: 100,
   },
 });

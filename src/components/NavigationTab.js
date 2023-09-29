@@ -3,8 +3,7 @@ import Map from "../Map";
 import Profile from "../Profile";
 import Feed from "../Feed";
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
-import CustomTabBarButton from "./CustomTabBarButton";
-import PopUpAdd from "./PopUpAdd";
+import Info from "../Info";
 
 const Tab = createBottomTabNavigator();
 
@@ -75,7 +74,7 @@ export default function NavigationTab({ handleUserLogout }) {
       />
       <Tab.Screen
         name="Info"
-        component={Map}
+        component={Info}
         options={{
           headerShown: false,
           tabBarIcon: ({ focused }) => (

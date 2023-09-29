@@ -22,7 +22,6 @@ export default function AddStory({ onClose, navigation }) {
   const [longitude, setLongitude] = useState(0);
   const [currentLocation, setCurrentLocation] = useState(null);
   const [textLocation, setTextLocation] = useState("");
-  const [capturedMedia, setCapturedMedia] = useState(null); // State to store captured media URI
 
   useEffect(() => {
     const getCurrentLocation = async () => {
@@ -89,26 +88,6 @@ export default function AddStory({ onClose, navigation }) {
   const dismissKeyboard = () => {
     // Handle the "Done" button press
     Keyboard.dismiss(); // Close the keyboard
-  };
-
-  const uploadPhotoToStorage = async (uri) => {
-    const fileName = `photos/${Date.now()}.jpg`;
-    const photoRef = storageRef.child(fileName);
-
-    const response = await fetch(uri);
-    const blob = await response.blob();
-
-    try {
-      await photoRef.put(blob);
-      const downloadURL = await photoRef.getDownloadURL();
-      console.log("Photo uploaded to:", downloadURL);
-      setPhotoUri(downloadURL); // Store the photo URL in state
-    } catch (error) {
-      console.error("Error uploading photo:", error);
-    }
-  };
-  const handleCapture = (uri) => {
-    setCapturedMedia(uri);
   };
 
   return (
