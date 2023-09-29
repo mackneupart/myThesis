@@ -68,9 +68,9 @@ export default function Feed({ navigation }) {
       <View style={styles.scrollContainer}>
         <ScrollView
           contentContainerStyle={{
-            paddingBottom: 120,
-            alignItems: "center",
-            marginRight: 50,
+            paddingBottom: 100,
+            alignItems: "flex-start",
+            marginLeft: 20,
           }} // Add some padding to the bottom
           refreshControl={
             <RefreshControl refreshing={refreshing} onRefresh={onRefresh} />
@@ -78,28 +78,15 @@ export default function Feed({ navigation }) {
           <Text style={styles.textHeader}>New Stories</Text>
           <View>
             {locationInfo.map((item, index) => (
-              <View key={`story-${index}`}>
-                <TouchableOpacity style={{ width: 200 }}>
-                  <Text
-                    style={styles.textTitle}
-                    onPress={() => handleNavigation(item.story)}>
-                    {item.story.title}{" "}
-                  </Text>
+              <TouchableOpacity
+                key={`story-${index}`}
+                onPress={() => handleNavigation(item.story)}>
+                <View style={styles.storyContainer}>
+                  <Text style={styles.textTitle}>{item.story.title} </Text>
                   <Text>Location: {item.address}</Text>
-                </TouchableOpacity>
-              </View>
+                </View>
+              </TouchableOpacity>
             ))}
-            {/* {stories.map((story, index) => (
-              <View key={`story-${index}`}>
-                <TouchableOpacity style={{ width: 200 }}>
-                  <Text
-                    style={styles.textTitle}
-                    onPress={() => handleNavigation(story)}>
-                    {story.title}{" "}
-                  </Text>
-                </TouchableOpacity>
-              </View>
-            ))} */}
           </View>
         </ScrollView>
       </View>
@@ -110,7 +97,7 @@ export default function Feed({ navigation }) {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: "#fff",
+    backgroundColor: "pink",
     fontSize: 40,
   },
 
@@ -129,18 +116,27 @@ const styles = StyleSheet.create({
     padding: 30,
   },
   textHeader: {
-    marginTop: 50,
-    fontSize: 50,
+    marginTop: 30,
+    fontSize: 40,
   },
   textTitle: {
-    marginTop: 20,
-    fontSize: 30,
-    borderColor: "#8F5AFF",
-    borderWidth: 1,
-    width: 250,
+    fontSize: 25,
   },
   scrollContainer: {
     flex: 1,
     marginBottom: 20,
+  },
+  storyContainer: {
+    justifyContent: "center",
+    width: 300,
+    height: 80,
+    padding: 10,
+    backgroundColor: "white",
+    marginBottom: 10,
+    borderRadius: 10,
+    shadowColor: "#000", // Shadow color
+    shadowOffset: { width: 0, height: 4 }, // Shadow offset (x, y)
+    shadowOpacity: 0.4, // Shadow opacity
+    shadowRadius: 4, // Shadow radius
   },
 });

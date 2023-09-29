@@ -108,7 +108,7 @@ export default function Profile({ handleUserLogout, navigation }) {
             <TouchableOpacity
               key={`story-${index}`}
               onPress={() => handleNavigation(story)}>
-              <View key={`story-${index}`} style={styles.storyContainer}>
+              <View style={styles.storyContainer}>
                 <Text style={styles.textTitle}>{story.title} </Text>
                 <TouchableOpacity
                   onPress={() => handleDelete(story)}
@@ -139,8 +139,8 @@ const styles = StyleSheet.create({
   },
 
   scrollContainer: {
-    alignSelf: "center",
-    flex: 1,
+    // alignSelf: "center",
+    // flex: 1,
   },
   imageContainer: {
     alignItems: "center",
@@ -169,8 +169,10 @@ const styles = StyleSheet.create({
     padding: 30,
   },
   textHeader: {
-    marginTop: 50,
-    fontSize: 50,
+    marginTop: 40,
+    fontSize: 30,
+    marginBottom: 10,
+    alignSelf: "center",
   },
   textTitle: {
     marginTop: 20,
@@ -178,16 +180,18 @@ const styles = StyleSheet.create({
   },
   storyContainer: {
     flexDirection: "row",
+    alignSelf: "center",
     justifyContent: "space-between",
+    width: 300,
+    height: 80,
     padding: 10,
-    borderWidth: 1,
     backgroundColor: "white",
     marginBottom: 10,
-    borderRadius: 5,
+    borderRadius: 10,
     shadowColor: "#000", // Shadow color
-    shadowOffset: { width: 0, height: 2 }, // Shadow offset (x, y)
-    shadowOpacity: 0.2, // Shadow opacity
-    shadowRadius: 2, // Shadow radius
+    shadowOffset: { width: 0, height: 4 }, // Shadow offset (x, y)
+    shadowOpacity: 0.4, // Shadow opacity
+    shadowRadius: 4, // Shadow radius
   },
   deleteButton: {
     alignSelf: "center",
