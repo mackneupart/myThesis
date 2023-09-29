@@ -1,12 +1,13 @@
 import { StatusBar } from "expo-status-bar";
 import { Button, StyleSheet, Text, View } from "react-native";
 import { Audio } from "expo-av";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 
 export default function AudioRecording() {
-  const [recording, setRecording] = useState();
-  const [recordings, setRecordings] = useState([]);
+  const [recording, setRecording] = useState(null);
+  const [isRecording, setIsRecording] = useState(false);
   const [message, setMessage] = useState("");
+  const [realRecording, setRealRecording] = useState(null);
 
   async function startRecording() {
     try {
@@ -21,29 +22,42 @@ export default function AudioRecording() {
         const { recording } = await Audio.Recording.createAsync(
           Audio.RECORDING_OPTIONS_PRESET_HIGH_QUALITY
         );
+        setIsRecording(true);
 
         setRecording(recording);
       } else {
-        setMessage("Please grant permission to app to access microphone");
+        setMessage(
+          "Please grant permission to the app to access the microphone"
+        );
       }
     } catch (err) {
-      console.error("Failed to start recording", err);
+      console.error("Recording error", err);
     }
   }
 
   async function stopRecording() {
-    setRecording(undefined);
     await recording.stopAndUnloadAsync();
-
-    let updatedRecordings = [...recordings];
+    setIsRecording(false);
     const { sound, status } = await recording.createNewLoadedSoundAsync();
-    updatedRecordings.push({
+    const updatedRecording = {
       sound: sound,
       duration: getDurationFormatted(status.durationMillis),
       file: recording.getURI(),
-    });
+    };
 
-    setRecordings(updatedRecordings);
+    setRealRecording(updatedRecording);
+  }
+  function getRecording() {
+    return (
+      <View style={styles.recording}>
+        <Text style={styles.fill}>
+          Recording {1} - {realRecording.duration}
+        </Text>
+        <Button
+          onPress={() => realRecording.sound.replayAsync()}
+          title="Play"></Button>
+      </View>
+    );
   }
 
   function getDurationFormatted(millis) {
@@ -54,32 +68,16 @@ export default function AudioRecording() {
     return `${minutesDisplay}:${secondsDisplay}`;
   }
 
-  function getRecordingLines() {
-    return recordings.map((recordingLine, index) => {
-      return (
-        <View key={index} style={styles.row}>
-          <Text style={styles.fill}>
-            Recording {index + 1} - {recordingLine.duration}
-          </Text>
-          <Button
-            style={styles.button}
-            onPress={() => recordingLine.sound.replayAsync()}
-            title="Play"></Button>
-        </View>
-      );
-    });
-  }
-
   return (
     <View style={styles.container}>
       <Text>{message}</Text>
       <View style={styles.audiobutton}>
         <Button
-          title={recording ? "Stop Recording" : "Start Recording"}
-          onPress={recording ? stopRecording : startRecording}
+          title={isRecording ? "Stop Recording" : "Start Recording"}
+          onPress={isRecording ? stopRecording : startRecording}
         />
       </View>
-      {getRecordingLines()}
+      {realRecording && getRecording()}
       <StatusBar style="auto" />
     </View>
   );
@@ -91,22 +89,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
-  row: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  fill: {
-    flex: 1,
-    margin: 16,
-  },
-  button: {
-    margin: 16,
-  },
   audiobutton: {
     backgroundColor: "lightgrey",
     borderWidth: 1,
     borderRadius: 100,
     padding: 10,
+  },
+  recording: {
+    flexDirection: "row",
+    alignItems: "center",
+    justifyContent: "space-between",
   },
 });
