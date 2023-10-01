@@ -9,7 +9,7 @@ import {
   addDoc,
   deleteDoc,
 } from "firebase/firestore";
-import { db } from "./Firebase";
+import { db, storage, storageRef } from "./Firebase";
 import {
   getAuth,
   createUserWithEmailAndPassword,
@@ -17,6 +17,15 @@ import {
   signOut,
   onAuthStateChanged,
 } from "firebase/auth";
+import {
+  getStorage,
+  ref,
+  getBytes,
+  getDownloadURL,
+  uploadBytes,
+  uploadBytesResumable,
+} from "firebase/storage";
+import * as DocumentPicker from "expo-document-picker";
 
 export const getUser = () => {
   const auth = getAuth();
@@ -233,4 +242,158 @@ export const deleteStory = async (storyID) => {
     console.error("Error deleting story:", error);
     return false;
   }
+};
+
+// export const saveAudioStory = async (story) => {
+//   const auth = getAuth();
+//   const user = auth.currentUser;
+//   const userID = user.uid;
+//   const audioCollection = collection(db, "audio-stories");
+//   const userData = await getUserDetails();
+
+//   try {
+//     if (!story.title || !story.file || !story.coordinates) {
+//       throw new Error("Invalid story data");
+//     }
+
+//     const response = await fetch(story.file);
+
+//     const blob = await response.blob();
+
+//     // Create a reference to the storage location where you want to store the audio
+//     const audioRef = ref(storageRef, `audio-stories/${Date.now()}.mp3`);
+
+//     // Upload the audio blob to Firebase Storage
+//     const uploadTask = uploadBytesResumable(audioRef, blob);
+//     // Wait for the upload to complete
+//     await uploadTask;
+
+//     const audioURL = await getDownloadURL(audioRef);
+
+//     const newStoryRef = doc(audioCollection);
+//     const storyID = newStoryRef.id;
+//     console.log("New story ID:", storyID);
+//     await addDoc(audioCollection, {
+//       title: story.title,
+//       userID: userID,
+//       audioURL: audioURL,
+//       coordinates: story.coordinates,
+//       storyID: storyID,
+//       createdAt: new Date(),
+//       author: userData.username,
+//     });
+
+//     return true;
+//   } catch (error) {
+//     console.error("Error saving story:", error);
+//     return false;
+//   }
+// };
+export const saveAudioStory = async (story) => {
+  const auth = getAuth();
+  const user = auth.currentUser;
+  const userID = user.uid;
+  const audioCollection = collection(db, "audio-stories");
+  const userData = await getUserDetails();
+
+  try {
+    if (!story.title || !story.file || !story.coordinates) {
+      throw new Error("Invalid story data");
+    }
+
+    const response = await fetch(story.file);
+    if (!response.ok) {
+      throw new Error("Failed to fetch audio file");
+    }
+
+    const blob = await response.blob();
+
+    // Generate a unique name for the audio file
+    const audioFileName = `audio-stories/${Date.now()}-${userID}.caf`;
+
+    // Create a reference to the storage location with metadata
+    const audioRef = ref(storageRef, audioFileName);
+
+    // Set content type for CAF files
+    const metadata = {
+      contentType: "audio/x-caf",
+    };
+
+    // Upload the audio blob to Firebase Storage with metadata
+    const uploadTask = uploadBytesResumable(audioRef, blob, metadata);
+
+    // Wait for the upload to complete
+    await uploadTask;
+
+    const audioURL = await getDownloadURL(audioRef);
+
+    const newStoryRef = doc(audioCollection);
+    const storyID = newStoryRef.id;
+    console.log("New story ID:", storyID);
+    await addDoc(audioCollection, {
+      title: story.title,
+      userID: userID,
+      audioURL: audioURL,
+      coordinates: story.coordinates,
+      storyID: storyID,
+      createdAt: new Date(),
+      author: userData.username,
+    });
+
+    return true;
+  } catch (error) {
+    console.error("Error saving story:", error.message);
+    return false;
+  }
+};
+
+export const getAudioStoriesForUser = async () => {
+  const auth = getAuth();
+  const user = auth.currentUser;
+  const userID = user.uid;
+  const audioCollection = collection(db, "audio-stories");
+  const q = query(audioCollection, where("userID", "==", userID));
+
+  try {
+    const querySnapshot = await getDocs(q);
+    const stories = [];
+
+    querySnapshot.forEach((doc) => {
+      // Extract data from the document
+      const storyData = doc.data();
+      stories.push(storyData);
+    });
+    return stories;
+  } catch (error) {
+    console.error("Error getting stories:", error);
+    return [];
+  }
+};
+
+export const getAudio = (audioURL) => {
+  const storageRef = ref(storage, audioURL);
+  const url = getDownloadURL(storageRef);
+  return url;
+};
+
+export const uploadPhoto = async (photo) => {
+  const auth = getAuth();
+
+  // Create a blob from the photo URI
+  const response = await fetch(photo);
+  const blob = await response.blob();
+
+  // Create a reference to the storage location where you want to store the photo
+  const photoRef = ref(storageRef, `story-photos/${Date.now()}.jpg`); // Use a unique name for each photo
+
+  // Upload the photo blob to Firebase Storage
+  const uploadTask = uploadBytesResumable(photoRef, blob);
+
+  // Wait for the upload to complete
+  await uploadTask;
+
+  // Get the download URL for the uploaded photo
+  const photoURL = await getDownloadURL(photoRef);
+
+  return photoURL;
 };

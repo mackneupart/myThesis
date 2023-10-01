@@ -1,7 +1,8 @@
 import { StatusBar } from "expo-status-bar";
 import { Button, StyleSheet, Text, View } from "react-native";
 import { Audio } from "expo-av";
-import { useState, useEffect } from "react";
+import { useState } from "react";
+import { saveAudioStory, uploadAudioFile } from "../config/Database";
 
 export default function AudioRecording() {
   const [recording, setRecording] = useState(null);
@@ -44,9 +45,39 @@ export default function AudioRecording() {
       duration: getDurationFormatted(status.durationMillis),
       file: recording.getURI(),
     };
+    await Audio.setAudioModeAsync({
+      allowsRecordingIOS: false,
+      playThroughEarpieceAndroid: false,
+    });
 
     setRealRecording(updatedRecording);
   }
+
+  function getDurationFormatted(millis) {
+    const minutes = millis / 1000 / 60;
+    const minutesDisplay = Math.floor(minutes);
+    const seconds = Math.round((minutes - minutesDisplay) * 60);
+    const secondsDisplay = seconds < 10 ? `0${seconds}` : seconds;
+    return `${minutesDisplay}:${secondsDisplay}`;
+  }
+
+  handleUpload = async (audio) => {
+    console.log(audio);
+    const story = {
+      title: "test",
+      file: audio.file,
+      coordinates: {
+        latitude: 0,
+        longitude: 0,
+      },
+    };
+    try {
+      await saveAudioStory(story);
+    } catch (error) {
+      console.log("error" + error);
+    }
+  };
+
   function getRecording() {
     return (
       <View style={styles.recording}>
@@ -56,16 +87,11 @@ export default function AudioRecording() {
         <Button
           onPress={() => realRecording.sound.replayAsync()}
           title="Play"></Button>
+        <Button
+          onPress={() => handleUpload(realRecording)}
+          title="Upload"></Button>
       </View>
     );
-  }
-
-  function getDurationFormatted(millis) {
-    const minutes = millis / 1000 / 60;
-    const minutesDisplay = Math.floor(minutes);
-    const seconds = Math.round((minutes - minutesDisplay) * 60);
-    const secondsDisplay = seconds < 10 ? `0${seconds}` : seconds;
-    return `${minutesDisplay}:${secondsDisplay}`;
   }
 
   return (
