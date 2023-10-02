@@ -1,4 +1,3 @@
-import { Marker } from "react-native-maps";
 import { StyleSheet, Text, View, ScrollView, Button } from "react-native";
 import * as Location from "expo-location";
 import { useEffect, useState } from "react";
@@ -129,18 +128,16 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#fff",
-    alignItems: "center",
     fontSize: 40,
   },
   textHeader: {
     fontFamily: "KaiseiTokumin-Regular",
     marginTop: 20,
-    fontSize: 50,
-    color: "blue",
+    fontSize: 40,
   },
   textViews: {
     fontFamily: "KaiseiTokumin-Regular",
     marginTop: 20,
-    fontSize: 30,
+    fontSize: 20,
   },
 });

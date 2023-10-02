@@ -6,13 +6,16 @@ import {
   TouchableOpacity,
   RefreshControl,
 } from "react-native";
-import { getAllStories } from "./config/Database";
+import { getAllStories, getAllAudioStories } from "./config/Database";
 import React, { useState, useEffect } from "react";
 import * as Location from "expo-location";
 
 export default function Feed({ navigation }) {
   const [stories, setStories] = useState([]);
+  const [audioStories, setAudioStories] = useState([]);
   const [locationInfo, setLocationInfo] = useState([]);
+  const [locationInfoAudio, setLocationInfoAudio] = useState([]);
+
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
@@ -21,6 +24,12 @@ export default function Feed({ navigation }) {
       setStories(stories);
     };
     getStories();
+    //fetch all audio stories from the database
+    const getAudiostories = async () => {
+      const audioStories = await getAllAudioStories();
+      setAudioStories(audioStories);
+    };
+    getAudiostories();
   }, []);
   useEffect(() => {
     const fetchLocationInfo = async () => {
@@ -38,6 +47,23 @@ export default function Feed({ navigation }) {
 
     fetchLocationInfo();
   }, [stories]);
+
+  useEffect(() => {
+    const fetchLocationInfoAudio = async () => {
+      const locationInfoAudio = await Promise.all(
+        audioStories.map(async (story) => {
+          const address = await fetchReverseGeocode(
+            story.coordinates[0],
+            story.coordinates[1]
+          );
+          return { story, address };
+        })
+      );
+      setLocationInfoAudio(locationInfoAudio);
+    };
+
+    fetchLocationInfoAudio();
+  }, [audioStories]);
 
   const fetchReverseGeocode = async (latitude, longitude) => {
     const reverseGeocodeAddress = await Location.reverseGeocodeAsync({
@@ -77,6 +103,19 @@ export default function Feed({ navigation }) {
           <Text style={styles.textHeader}>New Stories</Text>
           <View>
             {locationInfo.map((item, index) => (
+              <TouchableOpacity
+                key={`story-${index}`}
+                onPress={() => handleNavigation(item.story)}>
+                <View style={styles.storyContainer}>
+                  <Text style={styles.textTitle}>{item.story.title} </Text>
+                  <Text>Location: {item.address}</Text>
+                </View>
+              </TouchableOpacity>
+            ))}
+          </View>
+          <Text style={styles.textHeader}>Audio Stories</Text>
+          <View>
+            {locationInfoAudio.map((item, index) => (
               <TouchableOpacity
                 key={`story-${index}`}
                 onPress={() => handleNavigation(item.story)}>
