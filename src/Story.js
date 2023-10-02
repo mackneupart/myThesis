@@ -46,6 +46,14 @@ export default function Story({ route }) {
         const status = await soundObject.getStatusAsync();
         setAudioDuration(status.durationMillis);
         setSoundObject(soundObject);
+
+        // Detect when playback finishes
+        soundObject.setOnPlaybackStatusUpdate((status) => {
+          if (status.didJustFinish) {
+            // Playback finished, reset state
+            setIsPlaying(false);
+          }
+        });
       } catch (error) {
         console.error("Error loading audio:", error);
       }
@@ -65,20 +73,19 @@ export default function Story({ route }) {
   }, [isAudio]); // Load audio when isAudio becomes true
 
   const playAudio = async () => {
-    console.log("Play audio IS PRESSED");
-    if (!isPlaying && soundObject) {
+    if (soundObject) {
       try {
-        await soundObject.playAsync();
-        setIsPlaying(true);
+        if (isPlaying) {
+          // Pause playback and reset state
+          await soundObject.pauseAsync();
+          setIsPlaying(false);
+        } else {
+          // Start playback and update state
+          await soundObject.replayAsync();
+          setIsPlaying(true);
+        }
       } catch (error) {
-        console.error("Error playing audio:", error);
-      }
-    } else if (isPlaying && soundObject) {
-      try {
-        await soundObject.pauseAsync();
-        setIsPlaying(false);
-      } catch (error) {
-        console.error("Error pausing audio:", error);
+        console.error("Error toggling audio playback:", error);
       }
     }
   };
