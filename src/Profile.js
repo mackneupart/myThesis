@@ -221,6 +221,7 @@ const styles = StyleSheet.create({
     fontSize: 25,
     fontWeight: "bold",
     color: "#8F5AFF",
+    fontFamily: "FiraCode-Bold",
     padding: 30,
   },
   textHeader: {
@@ -228,10 +229,12 @@ const styles = StyleSheet.create({
     fontSize: 30,
     marginBottom: 10,
     alignSelf: "center",
+    fontFamily: "KaiseiTokumin-Regular",
   },
   textTitle: {
     marginTop: 20,
     fontSize: 20,
+    fontFamily: "KaiseiTokumin-Regular",
   },
   storyContainer: {
     flexDirection: "row",

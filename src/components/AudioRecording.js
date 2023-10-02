@@ -77,18 +77,24 @@ export default function AudioRecording({ handleAudioRecording }) {
     return (
       <View style={styles.recording}>
         {isUploaded ? (
-          <Text>YES</Text>
+          <Text>
+            {" "}
+            Recording - {realRecording.duration} {"\n "}
+            audio uploaded
+          </Text>
         ) : (
           <View>
             <Text style={styles.fill}>
-              Recording {1} - {realRecording.duration}
+              Your recording - {realRecording.duration}
             </Text>
-            <Button
-              onPress={() => realRecording.sound.replayAsync()}
-              title="Play"></Button>
-            <Button
-              onPress={() => handleUpload(realRecording)}
-              title="Upload"></Button>
+            <View style={{ flexDirection: "row" }}>
+              <Button
+                onPress={() => realRecording.sound.replayAsync()}
+                title="Play"></Button>
+              <Button
+                onPress={() => handleUpload(realRecording)}
+                title="Upload"></Button>
+            </View>
           </View>
         )}
       </View>
@@ -101,6 +107,7 @@ export default function AudioRecording({ handleAudioRecording }) {
       <View style={styles.audiobutton}>
         <Button
           title={isRecording ? "Stop Recording" : "Start Recording"}
+          color={isRecording ? "red" : "blue"}
           onPress={isRecording ? stopRecording : startRecording}
         />
       </View>
@@ -118,13 +125,26 @@ const styles = StyleSheet.create({
   },
   audiobutton: {
     backgroundColor: "lightgrey",
-    borderWidth: 1,
     borderRadius: 100,
     padding: 10,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 1,
+      height: 2,
+    },
+    shadowOpacity: 0.2,
+    shadowRadius: 2,
   },
+
   recording: {
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-between",
+  },
+  buttonStart: {
+    color: "green",
+  },
+  buttonStop: {
+    color: "red",
   },
 });

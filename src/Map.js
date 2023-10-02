@@ -127,12 +127,10 @@ export default function Map({ navigation }) {
       <View style={styles.logoBox}>
         <Text style={styles.logoText}>Queer Annotations</Text>
       </View>
-      {username ? (
+      {username && (
         <View style={styles.addButtonContainer}>
           <PopUpAdd />
         </View>
-      ) : (
-        <Text>failll</Text>
       )}
     </View>
   );
@@ -151,7 +149,7 @@ const styles = StyleSheet.create({
     color: "blue",
   },
   map: {
-    marginTop: 80,
+    // marginTop: 80,
     ...StyleSheet.absoluteFillObject,
   },
   logoBox: {
@@ -165,6 +163,7 @@ const styles = StyleSheet.create({
   logoText: {
     position: "absolute",
     marginTop: 10,
+    fontFamily: "FiraCode-Bold",
     fontSize: 25,
     fontWeight: "bold",
     color: "#8F5AFF",

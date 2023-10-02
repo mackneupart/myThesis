@@ -149,6 +149,7 @@ const styles = StyleSheet.create({
   logoText: {
     marginTop: 10,
     fontSize: 25,
+    fontFamily: "FiraCode-Bold",
     fontWeight: "bold",
     color: "#8F5AFF",
     padding: 30,
@@ -156,9 +157,11 @@ const styles = StyleSheet.create({
   textHeader: {
     marginTop: 30,
     fontSize: 40,
+    fontFamily: "KaiseiTokumin-Regular",
   },
   textTitle: {
     fontSize: 25,
+    fontFamily: "KaiseiTokumin-Regular",
   },
   scrollContainer: {
     flex: 1,

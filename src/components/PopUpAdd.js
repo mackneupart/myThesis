@@ -154,8 +154,8 @@ export default function PopUpAdd() {
           <View style={styles.modalContent}>
             <View style={styles.radioButtons}>
               <View style={styles.radioContainer}>
-                <View style={styles.radioText}>
-                  <Text>Text story:</Text>
+                <View>
+                  <Text style={styles.radioText}>Text story:</Text>
                 </View>
                 <TouchableOpacity onPress={() => handleTextRadio()}>
                   <View style={styles.radio}>
@@ -164,8 +164,8 @@ export default function PopUpAdd() {
                 </TouchableOpacity>
               </View>
               <View style={styles.radioContainer}>
-                <View style={styles.radioText}>
-                  <Text>audio story:</Text>
+                <View>
+                  <Text style={styles.radioText}>audio story:</Text>
                 </View>
 
                 <TouchableOpacity onPress={() => handleAudioRadio()}>
@@ -175,14 +175,15 @@ export default function PopUpAdd() {
                 </TouchableOpacity>
               </View>
             </View>
-
-            <Text>Title:</Text>
-            <TextInput
-              style={styles.input}
-              placeholder="Enter title"
-              onChangeText={(text) => settitle(text)}
-              value={title}
-            />
+            <View>
+              <Text>Title:</Text>
+              <TextInput
+                style={styles.input}
+                placeholder="Enter title"
+                onChangeText={(text) => settitle(text)}
+                value={title}
+              />
+            </View>
             {isTextChecked ? (
               <View>
                 <TextInput
@@ -199,16 +200,19 @@ export default function PopUpAdd() {
                 />
               </View>
             ) : (
-              <AudioRecording handleAudioRecording={handleAudioRecording} />
+              <View style={styles.recording}>
+                <AudioRecording handleAudioRecording={handleAudioRecording} />
+              </View>
             )}
+            <View>
+              <Text>Address {"(street name, city)"}:</Text>
 
-            <Text>Address {"(street name, city)"}:</Text>
-
-            <TextInput
-              style={styles.input}
-              placeholder="Enter location"
-              onChangeText={(text) => setTextLocation(text)}
-            />
+              <TextInput
+                style={styles.input}
+                placeholder="Enter location"
+                onChangeText={(text) => setTextLocation(text)}
+              />
+            </View>
 
             {/* <TouchableOpacity onPress={useCurrentLocation}>
               <Text>Use current location</Text>
@@ -337,5 +341,9 @@ const styles = StyleSheet.create({
     height: 16,
     width: 16,
     borderRadius: 100,
+  },
+
+  recording: {
+    marginBottom: 30,
   },
 });

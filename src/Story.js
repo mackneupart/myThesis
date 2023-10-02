@@ -1,4 +1,11 @@
-import { StyleSheet, Text, View, ScrollView, Button } from "react-native";
+import {
+  StyleSheet,
+  Text,
+  View,
+  ScrollView,
+  Button,
+  Image,
+} from "react-native";
 import * as Location from "expo-location";
 import { useEffect, useState } from "react";
 import { Audio } from "expo-av";
@@ -98,26 +105,34 @@ export default function Story({ route }) {
 
   return (
     <View style={styles.container}>
-      <Text style={styles.textHeader}>
-        Title: {"\n"}
-        {story.title}
-      </Text>
-      <Text style={styles.textViews}>Author: {story.author}</Text>
-      <Text style={styles.textViews}>Address: {address}</Text>
+      <View style={styles.infoContainer}>
+        <Text style={styles.textHeader}>Title: {story.title}</Text>
+        <Text style={styles.infoText}>Author: {story.author}</Text>
+        <Text style={styles.infoText}>Address: {address}</Text>
+      </View>
       {isAudio ? (
         <View>
-          <Text>AUDIO</Text>
-          <Button
-            onPress={() => {
-              playAudio();
-            }}
-            title={isPlaying ? "Pause" : "Play"}
-          />
-          <Text>Duration: {formatDuration(audioDuration)}</Text>
+          <View
+            style={{
+              flexDirection: "row",
+              justifyContent: "center",
+              marginTop: 50,
+            }}>
+            <Image source={require("./assets/icons/speaker.png")} />
+            <Button
+              onPress={() => {
+                playAudio();
+              }}
+              title={isPlaying ? "Pause" : "Play"}
+            />
+          </View>
+          <Text style={{ alignSelf: "center" }}>
+            Duration: {formatDuration(audioDuration)}
+          </Text>
         </View>
       ) : (
-        <ScrollView>
-          <Text style={styles.textViews}>Description: {story.description}</Text>
+        <ScrollView style={styles.scrollContainer}>
+          <Text style={styles.textDescription}>{`"${story.description}"`}</Text>
         </ScrollView>
       )}
     </View>
@@ -132,12 +147,27 @@ const styles = StyleSheet.create({
   },
   textHeader: {
     fontFamily: "KaiseiTokumin-Regular",
-    marginTop: 20,
-    fontSize: 40,
+    color: "#8F5AFF",
+    fontSize: 30,
   },
-  textViews: {
+  textDescription: {
     fontFamily: "KaiseiTokumin-Regular",
-    marginTop: 20,
     fontSize: 20,
+    fontStyle: "italic",
+  },
+  infoText: {
+    fontFamily: "KaiseiTokumin-Regular",
+    fontSize: 14,
+  },
+  infoContainer: {
+    backgroundColor: "lightgrey",
+    padding: 50,
+    margin: 10,
+  },
+  scrollContainer: {
+    margin: 10,
+    paddingRight: 20,
+    paddingLeft: 20,
+    marginBottom: 20,
   },
 });
