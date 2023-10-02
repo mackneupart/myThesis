@@ -244,51 +244,6 @@ export const deleteStory = async (storyID) => {
   }
 };
 
-// export const saveAudioStory = async (story) => {
-//   const auth = getAuth();
-//   const user = auth.currentUser;
-//   const userID = user.uid;
-//   const audioCollection = collection(db, "audio-stories");
-//   const userData = await getUserDetails();
-
-//   try {
-//     if (!story.title || !story.file || !story.coordinates) {
-//       throw new Error("Invalid story data");
-//     }
-
-//     const response = await fetch(story.file);
-
-//     const blob = await response.blob();
-
-//     // Create a reference to the storage location where you want to store the audio
-//     const audioRef = ref(storageRef, `audio-stories/${Date.now()}.mp3`);
-
-//     // Upload the audio blob to Firebase Storage
-//     const uploadTask = uploadBytesResumable(audioRef, blob);
-//     // Wait for the upload to complete
-//     await uploadTask;
-
-//     const audioURL = await getDownloadURL(audioRef);
-
-//     const newStoryRef = doc(audioCollection);
-//     const storyID = newStoryRef.id;
-//     console.log("New story ID:", storyID);
-//     await addDoc(audioCollection, {
-//       title: story.title,
-//       userID: userID,
-//       audioURL: audioURL,
-//       coordinates: story.coordinates,
-//       storyID: storyID,
-//       createdAt: new Date(),
-//       author: userData.username,
-//     });
-
-//     return true;
-//   } catch (error) {
-//     console.error("Error saving story:", error);
-//     return false;
-//   }
-// };
 export const saveAudioStory = async (story) => {
   const auth = getAuth();
   const user = auth.currentUser;
@@ -306,10 +261,11 @@ export const saveAudioStory = async (story) => {
       throw new Error("Failed to fetch audio file");
     }
 
+    //generate blob from the audio file
     const blob = await response.blob();
 
     // Generate a unique name for the audio file
-    const audioFileName = `audio-stories/${Date.now()}-${userID}.caf`;
+    const audioFileName = `audio-stories/${Date.now()}.caf`;
 
     // Create a reference to the storage location with metadata
     const audioRef = ref(storageRef, audioFileName);
@@ -320,11 +276,10 @@ export const saveAudioStory = async (story) => {
     };
 
     // Upload the audio blob to Firebase Storage with metadata
-    const uploadTask = uploadBytesResumable(audioRef, blob, metadata);
+    const uploadAudio = uploadBytesResumable(audioRef, blob, metadata);
+    await uploadAudio;
 
-    // Wait for the upload to complete
-    await uploadTask;
-
+    // Generates a public URL for the file, to be stored in the database
     const audioURL = await getDownloadURL(audioRef);
 
     const newStoryRef = doc(audioCollection);
@@ -377,8 +332,6 @@ export const getAudio = (audioURL) => {
 };
 
 export const uploadPhoto = async (photo) => {
-  const auth = getAuth();
-
   // Create a blob from the photo URI
   const response = await fetch(photo);
   const blob = await response.blob();

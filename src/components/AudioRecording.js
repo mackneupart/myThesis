@@ -9,6 +9,7 @@ export default function AudioRecording() {
   const [isRecording, setIsRecording] = useState(false);
   const [message, setMessage] = useState("");
   const [realRecording, setRealRecording] = useState(null);
+  const [isUploaded, setIsUploaded] = useState(false);
 
   async function startRecording() {
     try {
@@ -73,6 +74,7 @@ export default function AudioRecording() {
     };
     try {
       await saveAudioStory(story);
+      setIsUploaded(true);
     } catch (error) {
       console.log("error" + error);
     }
@@ -81,15 +83,21 @@ export default function AudioRecording() {
   function getRecording() {
     return (
       <View style={styles.recording}>
-        <Text style={styles.fill}>
-          Recording {1} - {realRecording.duration}
-        </Text>
-        <Button
-          onPress={() => realRecording.sound.replayAsync()}
-          title="Play"></Button>
-        <Button
-          onPress={() => handleUpload(realRecording)}
-          title="Upload"></Button>
+        {isUploaded ? (
+          <Text>YES</Text>
+        ) : (
+          <View>
+            <Text style={styles.fill}>
+              Recording {1} - {realRecording.duration}
+            </Text>
+            <Button
+              onPress={() => realRecording.sound.replayAsync()}
+              title="Play"></Button>
+            <Button
+              onPress={() => handleUpload(realRecording)}
+              title="Upload"></Button>
+          </View>
+        )}
       </View>
     );
   }
