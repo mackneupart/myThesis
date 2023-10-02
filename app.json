@@ -26,7 +26,11 @@
     "plugins": {
       "expo-camera": {
         "permissions": [
-          "camera"
+          "RECORD_AUDIO",
+          "CAMERA",
+          "WRITE_EXTERNAL_STORAGE",
+          "READ_EXTERNAL_STORAGE",
+          "MODIFY_AUDIO_SETTINGS"
         ]
       }
     }

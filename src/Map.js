@@ -3,13 +3,19 @@ import React, { useState, useEffect } from "react";
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
 import MapView, { Marker, Callout } from "react-native-maps";
 import * as Location from "expo-location";
-import { getAllStories, getUser, getUserDetails } from "./config/Database";
+import {
+  getAllStories,
+  getUser,
+  getUserDetails,
+  getAllAudioStories,
+} from "./config/Database";
 import { useFocusEffect } from "@react-navigation/native";
 import PopUpAdd from "./components/PopUpAdd";
 
 export default function Map({ navigation }) {
   const [currentLocation, setCurrentLocation] = useState(undefined);
   const [stories, setStories] = useState([]);
+  const [audioStories, setAudioStories] = useState([]);
   const [username, setUsername] = useState(null);
 
   useEffect(() => {
@@ -47,11 +53,19 @@ export default function Map({ navigation }) {
 
   useFocusEffect(
     React.useCallback(() => {
+      //Fetch all stories from the database
       const getStories = async () => {
         const stories = await getAllStories();
         setStories(stories);
       };
       getStories();
+
+      //fetch all audio stories from the database
+      const getAudiostories = async () => {
+        const audioStories = await getAllAudioStories();
+        setAudioStories(audioStories);
+      };
+      getAudiostories();
     }, [])
   );
 
@@ -85,6 +99,20 @@ export default function Map({ navigation }) {
             title={story.title}>
             <Callout onPress={() => handleMarkerPress(story)}>
               <Text>{story.title}</Text>
+            </Callout>
+          </Marker>
+        ))}
+        {audioStories.map((audioStory, index) => (
+          <Marker
+            key={index}
+            coordinate={{
+              latitude: audioStory.coordinates[0],
+              longitude: audioStory.coordinates[1],
+            }}
+            pinColor="green"
+            title={audioStory.title}>
+            <Callout onPress={() => handleMarkerPress(audioStory)}>
+              <Text>{audioStory.title}</Text>
             </Callout>
           </Marker>
         ))}

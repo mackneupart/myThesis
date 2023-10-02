@@ -2,9 +2,9 @@ import { StatusBar } from "expo-status-bar";
 import { Button, StyleSheet, Text, View } from "react-native";
 import { Audio } from "expo-av";
 import { useState } from "react";
-import { saveAudioStory, uploadAudioFile } from "../config/Database";
+import { uploadAudioStory, uploadAudioFile } from "../config/Database";
 
-export default function AudioRecording() {
+export default function AudioRecording({ handleAudioRecording }) {
   const [recording, setRecording] = useState(null);
   const [isRecording, setIsRecording] = useState(false);
   const [message, setMessage] = useState("");
@@ -63,18 +63,11 @@ export default function AudioRecording() {
   }
 
   handleUpload = async (audio) => {
-    console.log(audio);
-    const story = {
-      title: "test",
-      file: audio.file,
-      coordinates: {
-        latitude: 0,
-        longitude: 0,
-      },
-    };
     try {
-      await saveAudioStory(story);
+      const audioFile = await uploadAudioStory(audio.file);
       setIsUploaded(true);
+      handleAudioRecording(audioFile);
+      return audioFile;
     } catch (error) {
       console.log("error" + error);
     }

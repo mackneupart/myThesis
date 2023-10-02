@@ -252,29 +252,44 @@ export const saveAudioStory = async (story) => {
   const userData = await getUserDetails();
 
   try {
-    if (!story.title || !story.file || !story.coordinates) {
+    if (!story.title || !story.coordinates || !story.audioURL) {
       throw new Error("Invalid story data");
     }
+    const newStoryRef = doc(audioCollection);
+    const storyID = newStoryRef.id;
 
-    const response = await fetch(story.file);
-    if (!response.ok) {
-      throw new Error("Failed to fetch audio file");
-    }
+    console.log("New story ID:", storyID);
+    await addDoc(audioCollection, {
+      title: story.title,
+      userID: userID,
+      audioURL: story.audioURL,
+      coordinates: story.coordinates,
+      storyID: storyID,
+      createdAt: new Date(),
+      author: userData.username,
+    });
+  } catch (error) {
+    console.error("Error saving story:", error);
+    return false;
+  }
+};
 
-    //generate blob from the audio file
-    const blob = await response.blob();
-
-    // Generate a unique name for the audio file
-    const audioFileName = `audio-stories/${Date.now()}.caf`;
-
-    // Create a reference to the storage location with metadata
-    const audioRef = ref(storageRef, audioFileName);
-
-    // Set content type for CAF files
-    const metadata = {
-      contentType: "audio/x-caf",
-    };
-
+export const uploadAudioStory = async (audio) => {
+  const response = await fetch(audio);
+  if (!response.ok) {
+    throw new Error("Failed to fetch audio file");
+  }
+  //generate blob from the audio file
+  const blob = await response.blob();
+  // Generate a unique name for the audio file
+  const audioFileName = `audio-stories/${Date.now()}.caf`;
+  // Create a reference to the storage location with metadata
+  const audioRef = ref(storageRef, audioFileName);
+  // Set content type for CAF files
+  const metadata = {
+    contentType: "audio/x-caf",
+  };
+  try {
     // Upload the audio blob to Firebase Storage with metadata
     const uploadAudio = uploadBytesResumable(audioRef, blob, metadata);
     await uploadAudio;
@@ -282,22 +297,9 @@ export const saveAudioStory = async (story) => {
     // Generates a public URL for the file, to be stored in the database
     const audioURL = await getDownloadURL(audioRef);
 
-    const newStoryRef = doc(audioCollection);
-    const storyID = newStoryRef.id;
-    console.log("New story ID:", storyID);
-    await addDoc(audioCollection, {
-      title: story.title,
-      userID: userID,
-      audioURL: audioURL,
-      coordinates: story.coordinates,
-      storyID: storyID,
-      createdAt: new Date(),
-      author: userData.username,
-    });
-
-    return true;
+    return audioURL;
   } catch (error) {
-    console.error("Error saving story:", error.message);
+    console.error("Error uploading story:", error.message);
     return false;
   }
 };
@@ -321,6 +323,25 @@ export const getAudioStoriesForUser = async () => {
     return stories;
   } catch (error) {
     console.error("Error getting stories:", error);
+    return [];
+  }
+};
+
+export const getAllAudioStories = async () => {
+  const audioCollection = collection(db, "audio-stories");
+
+  try {
+    const querySnapshot = await getDocs(audioCollection);
+    const audioStories = [];
+
+    querySnapshot.forEach((doc) => {
+      // Extract data from the document
+      const storyData = doc.data();
+      audioStories.push(storyData);
+    });
+    return audioStories;
+  } catch (error) {
+    console.error("Error getting audioStories:", error);
     return [];
   }
 };

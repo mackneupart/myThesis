@@ -10,8 +10,9 @@ import {
 } from "react-native";
 import { useState, useEffect } from "react";
 import * as Location from "expo-location";
-import { saveStory } from "../config/Database";
+import { saveStory, saveAudioStory } from "../config/Database";
 import AudioRecording from "./AudioRecording";
+import { ReemKufiInk_400Regular } from "@expo-google-fonts/dev";
 
 export default function PopUpAdd() {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
@@ -23,6 +24,7 @@ export default function PopUpAdd() {
   const [textLocation, setTextLocation] = useState("");
   const [isTextChecked, setIsTextChecked] = useState(true);
   const [isAudioChecked, setIsAudioChecked] = useState(false);
+  const [receivedAudioFile, setReceivedAudioFile] = useState(null);
 
   useEffect(() => {
     const getCurrentLocation = async () => {
@@ -111,9 +113,28 @@ export default function PopUpAdd() {
   };
 
   const handleAudioRecording = (audioData) => {
-    // Handle the recorded audio data here
-    // You can store it in your state or perform any necessary actions
-    console.log("Received audio data:", audioData);
+    setReceivedAudioFile(audioData);
+  };
+
+  const handleAudioSubmit = async () => {
+    const coordinates = [latitude, longitude];
+    const audioURL = receivedAudioFile;
+    console.log(audioURL);
+    const story = {
+      title: title,
+      audioURL: audioURL,
+      coordinates: coordinates,
+    };
+    console.log(story.title, story.audioURL, story.coordinates);
+    try {
+      await saveAudioStory(story);
+      settitle("");
+      setTextLocation("");
+      setIsPopupVisible(false);
+    } catch (error) {
+      alert("Something went wrong with saving the story");
+      console.log(error + " Error saving audio story");
+    }
   };
   return (
     <View>
@@ -178,7 +199,7 @@ export default function PopUpAdd() {
                 />
               </View>
             ) : (
-              <AudioRecording />
+              <AudioRecording handleAudioRecording={handleAudioRecording} />
             )}
 
             <Text>Address {"(street name, city)"}:</Text>
@@ -196,11 +217,20 @@ export default function PopUpAdd() {
             <Text>latitude: {latitude}</Text>
             <Text>longitude: {longitude}</Text> */}
             <View style={styles.buttonContainer}>
-              <TouchableOpacity
-                style={styles.confirmButton}
-                onPress={handleSubmit}>
-                <Text style={styles.buttonText}>Submit</Text>
-              </TouchableOpacity>
+              {isTextChecked ? (
+                <TouchableOpacity
+                  style={styles.confirmButton}
+                  onPress={handleSubmit}>
+                  <Text style={styles.buttonText}>Submit</Text>
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  style={styles.confirmButton}
+                  onPress={handleAudioSubmit}>
+                  <Text style={styles.buttonText}>Submit</Text>
+                </TouchableOpacity>
+              )}
+
               <TouchableOpacity
                 style={styles.cancelButton}
                 onPress={closePopup}>
