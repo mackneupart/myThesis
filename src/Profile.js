@@ -123,7 +123,13 @@ export default function Profile({ handleUserLogout, navigation }) {
               key={`story-${index}`}
               onPress={() => handleNavigation(story)}>
               <View style={styles.storyContainer}>
-                <Text style={styles.textTitle}>{story.title} </Text>
+                <View style={{ flexDirection: "row" }}>
+                  <Image
+                    source={require("./assets/icons/text.png")}
+                    style={styles.storyIcon}
+                  />
+                  <Text style={styles.textTitle}>{story.title} </Text>
+                </View>
                 <TouchableOpacity
                   onPress={() => handleDelete(story)}
                   style={styles.deleteButton}>
@@ -139,7 +145,13 @@ export default function Profile({ handleUserLogout, navigation }) {
               key={`story-${index}`}
               onPress={() => handleNavigation(story)}>
               <View style={styles.storyContainer}>
-                <Text style={styles.textTitle}>{story.title} </Text>
+                <View style={{ flexDirection: "row" }}>
+                  <Image
+                    source={require("./assets/icons/speaker.png")}
+                    style={styles.storyIcon}
+                  />
+                  <Text style={styles.textTitle}>{story.title} </Text>
+                </View>
                 <TouchableOpacity
                   onPress={() => handleDelete(story)}
                   style={styles.deleteButton}>
@@ -192,6 +204,7 @@ const styles = StyleSheet.create({
     marginBottom: 10,
   },
   profileImage: { width: 100, height: 100 },
+  storyIcon: { width: 20, height: 20, positiona: "absolute" },
 
   userDetails: {
     alignItems: "center",
@@ -235,6 +248,7 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.4, // Shadow opacity
     shadowRadius: 4, // Shadow radius
   },
+
   deleteButton: {
     alignSelf: "center",
     backgroundColor: "lightgrey",
