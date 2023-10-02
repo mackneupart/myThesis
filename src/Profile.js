@@ -11,6 +11,8 @@ import {
   signOutUser,
   getStoriesForUser,
   deleteStory,
+  deleteAudioStory,
+  getAudioStoriesForUser,
 } from "./config/Database";
 import React, { useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
@@ -20,7 +22,8 @@ import ConfirmationModal from "./components/ConfirmationModal"; // Import the Co
 export default function Profile({ handleUserLogout, navigation }) {
   const [email, setEmail] = useState("");
   const [username, setUsername] = useState("");
-  const [stories, setUserStories] = useState([]);
+  const [stories, setStories] = useState([]);
+  const [audioStories, setAudioStories] = useState([]);
   const [selectedStory, setSelectedStory] = useState(null);
   const [isModalVisible, setIsModalVisible] = useState(false);
 
@@ -34,9 +37,14 @@ export default function Profile({ handleUserLogout, navigation }) {
 
       const fetchUserStories = async () => {
         const userStories = await getStoriesForUser();
-        setUserStories(userStories);
+        setStories(userStories);
       };
-
+      //fetch all audio stories from the database
+      const getAudiostories = async () => {
+        const audioStories = await getAudioStoriesForUser();
+        setAudioStories(audioStories);
+      };
+      getAudiostories();
       fetchUserDetails();
       fetchUserStories();
     }, [])
@@ -61,10 +69,15 @@ export default function Profile({ handleUserLogout, navigation }) {
   };
   const handleConfirmDelete = async () => {
     try {
-      if (selectedStory) {
+      if (selectedStory.description) {
         await deleteStory(selectedStory.storyID);
-        const userStories = await getStoriesForUser();
-        setUserStories(userStories);
+        const stories = await getStoriesForUser();
+        setStories(stories);
+      }
+      if (selectedStory.audioURL) {
+        await deleteAudioStory(selectedStory.storyID);
+        const audioStories = await getAudioStoriesForUser();
+        setAudioStories(audioStories);
       }
     } catch (error) {
       console.log("Error deleting story: " + error);
@@ -75,6 +88,7 @@ export default function Profile({ handleUserLogout, navigation }) {
   const handleCancelDelete = () => {
     setSelectedStory(null); // Clear the selected story
     setIsModalVisible(false); // Close the modal
+    console.log(selectedStory);
   };
 
   return (
@@ -119,13 +133,38 @@ export default function Profile({ handleUserLogout, navigation }) {
             </TouchableOpacity>
           ))}
         </View>
+        <View>
+          {audioStories.map((story, index) => (
+            <TouchableOpacity
+              key={`story-${index}`}
+              onPress={() => handleNavigation(story)}>
+              <View style={styles.storyContainer}>
+                <Text style={styles.textTitle}>{story.title} </Text>
+                <TouchableOpacity
+                  onPress={() => handleDelete(story)}
+                  style={styles.deleteButton}>
+                  <Text style={styles.deleteButtonText}>Delete</Text>
+                </TouchableOpacity>
+              </View>
+            </TouchableOpacity>
+          ))}
+        </View>
       </View>
-      <ConfirmationModal
-        visible={isModalVisible}
-        onConfirm={handleConfirmDelete}
-        onCancel={handleCancelDelete}
-        text="Are you sure you want to delete this story?"
-      />
+      {selectedStory ? (
+        <ConfirmationModal
+          visible={isModalVisible}
+          onConfirm={handleConfirmDelete}
+          onCancel={handleCancelDelete}
+          text="Are you sure you want to delete this audio story?"
+        />
+      ) : (
+        <ConfirmationModal
+          visible={isModalVisible}
+          onConfirm={handleConfirmDelete}
+          onCancel={handleCancelDelete}
+          text="Are you sure you want to delete this story?"
+        />
+      )}
     </ScrollView>
   );
 }
