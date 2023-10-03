@@ -15,7 +15,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.mackneupart.queerannotations"
     },
     "android": {
       "adaptiveIcon": {
@@ -23,9 +24,9 @@
         "backgroundColor": "#ffffff"
       }
     },
-    "plugins": {
-      "name": "expo-camera"
-    },
+    "plugin": [
+      "expo-camera"
+    ],
     "extra": {
       "eas": {
         "projectId": "306381d4-be55-4b5d-b5cd-ac4813cb0466"
