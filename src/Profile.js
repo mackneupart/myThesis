@@ -203,8 +203,15 @@ const styles = StyleSheet.create({
     borderColor: "lightgrey",
     marginBottom: 10,
   },
-  profileImage: { width: 100, height: 100 },
-  storyIcon: { width: 20, height: 20, positiona: "absolute" },
+  profileImage: {
+    width: 100,
+    height: 100,
+  },
+  storyIcon: {
+    width: 20,
+    height: 20,
+    position: "absolute",
+  },
 
   userDetails: {
     alignItems: "center",
@@ -242,7 +249,7 @@ const styles = StyleSheet.create({
     justifyContent: "space-between",
     width: 300,
     height: 80,
-    padding: 10,
+    padding: 15,
     backgroundColor: "white",
     marginBottom: 10,
     borderRadius: 10,

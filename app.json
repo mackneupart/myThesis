@@ -1,13 +1,13 @@
 {
   "expo": {
-    "name": "myThesis",
-    "slug": "myThesis",
+    "name": "Queer Annotations",
+    "slug": "queer-annotations",
     "version": "1.0.0",
     "orientation": "portrait",
-    "icon": "./assets/icon.png",
+    "icon": ".src/assets/icon.png",
     "userInterfaceStyle": "light",
     "splash": {
-      "image": "./assets/splash.png",
+      "image": "./src/assets/splash.png",
       "resizeMode": "contain",
       "backgroundColor": "#ffffff"
     },
@@ -24,15 +24,18 @@
       }
     },
     "plugins": {
-      "expo-camera": {
-        "permissions": [
-          "RECORD_AUDIO",
-          "CAMERA",
-          "WRITE_EXTERNAL_STORAGE",
-          "READ_EXTERNAL_STORAGE",
-          "MODIFY_AUDIO_SETTINGS"
-        ]
+      "name": "expo-camera"
+    },
+    "extra": {
+      "eas": {
+        "projectId": "306381d4-be55-4b5d-b5cd-ac4813cb0466"
       }
+    },
+    "runtimeVersion": {
+      "policy": "sdkVersion"
+    },
+    "updates": {
+      "url": "https://u.expo.dev/306381d4-be55-4b5d-b5cd-ac4813cb0466"
     }
   }
 }

@@ -1,75 +1,30 @@
-import { useEffect, useState } from "react";
-import { Button, StyleSheet, Text, View, Image } from "react-native";
-import { uploadPhoto } from "./config/Database";
-import { Camera } from "expo-camera";
+import { StyleSheet, Text, View, ScrollView } from "react-native";
 
 export default function Info() {
-  const [hasPermission, setHasPermission] = useState(null);
-  const [cameraRef, setCameraRef] = useState(null);
-  const [isPreviewing, setIsPreviewing] = useState(false);
-  const [capturedImage, setCapturedImage] = useState(null);
-
-  useEffect(() => {
-    (async () => {
-      const { status } = await Camera.requestCameraPermissionsAsync();
-      setHasPermission(status === "granted");
-    })();
-  }, []);
-
-  const handleTakePhoto = async () => {
-    if (cameraRef) {
-      const photo = await cameraRef.takePictureAsync();
-      setCapturedImage(photo.uri);
-      setIsPreviewing(true);
-    }
-  };
-
-  const handleRetakePhoto = () => {
-    setCapturedImage(null);
-    setIsPreviewing(false);
-  };
-
   return (
     <View style={styles.container}>
-      {hasPermission === null ? (
-        <Text>Requesting camera permission...</Text>
-      ) : hasPermission === false ? (
-        <Text>No access to camera</Text>
-      ) : (
-        <>
-          <Camera
-            style={styles.camera}
-            ref={(ref) => setCameraRef(ref)}
-            type={Camera.Constants.Type.back}
-          />
-
-          {!isPreviewing ? (
-            <Button
-              title="Take Photo"
-              onPress={handleTakePhoto}
-              disabled={!cameraRef}
-            />
-          ) : (
-            <>
-              <Button title="Retake" onPress={handleRetakePhoto} />
-              <Button
-                title="Save Photo"
-                onPress={() => uploadPhoto(capturedImage)}
-              />
-            </>
-          )}
-
-          {capturedImage && (
-            <View style={styles.previewContainer}>
-              <Text>Captured Photo:</Text>
-              <Image
-                source={{ uri: capturedImage }}
-                style={styles.previewImage}
-              />
-            </View>
-          )}
-        </>
-      )}
+      <View style={styles.logoBox}>
+        <Text style={styles.logoText}>Queer Annotations</Text>
+      </View>
+      <ScrollView>
+        <Text style={styles.textViews}>
+          Queer Annotations is a mobile application developed by Mack Neupart as
+          a thesis project for the master programme in Software Design.
+          {"\n"}
+          {"\n"}
+          Queer annotations is a user-generated platform meaning users are
+          essential for the platform to work as intended. Users are able to
+          write or audio-record stories, memories or anecdotes which depict any
+          aspect of queer-life, the annotations will furthermore be required to
+          be associated with a specific location.
+          {"\n"}
+          {"\n"}
+          Both users and non-logged in users can see the map and open the
+          stories at their exact location. This feature is meant for the content
+          to be experienced at the location they are associated with - to
+          investigate the understanding and creation of places.
+        </Text>
+      </ScrollView>
     </View>
   );
 }
@@ -77,20 +32,38 @@ export default function Info() {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: "#fff",
     alignItems: "center",
-    justifyContent: "center",
+    fontSize: 40,
   },
-  camera: {
-    width: 300,
-    height: 300,
-    marginBottom: 20,
+  logoBox: {
+    marginTop: 60,
+    backgroundColor: "lightgrey",
+    height: 110,
+    width: 320,
+    borderRadius: 10,
   },
-  previewContainer: {
-    alignItems: "center",
+  logoText: {
+    position: "absolute",
+    marginTop: 10,
+    fontFamily: "FiraCode-Bold",
+    fontSize: 25,
+    fontWeight: "bold",
+    color: "#8F5AFF",
+    padding: 30,
+  },
+  textHeader: {
     marginTop: 20,
+    fontSize: 50,
   },
-  previewImage: {
-    width: 200,
-    height: 200,
+  textViews: {
+    marginTop: 20,
+    fontSize: 20,
+    fontFamily: "KaiseiTokumin-Regular",
+    padding: 20,
+    backgroundColor: "lightgrey",
+    marginRight: 30,
+    marginLeft: 30,
+    marginBottom: 130,
   },
 });

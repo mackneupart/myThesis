@@ -181,8 +181,11 @@ export const saveStory = async (story) => {
 
   try {
     if (!story.title || !story.description || !story.coordinates) {
+      alert("Please filluot title, description and coordinates");
       throw new Error("Invalid story data");
     }
+    console.log("STORY IMAGE: " + story.image);
+
     // Create a Firestore transaction
     const newStoryRef = doc(storiesCollection);
     const storyID = newStoryRef.id;
@@ -195,6 +198,7 @@ export const saveStory = async (story) => {
       storyID: storyID,
       createdAt: new Date(),
       author: userData.username,
+      imageURL: story.image,
     });
 
     return true;
@@ -275,6 +279,7 @@ export const saveAudioStory = async (story) => {
     if (!story.title || !story.coordinates || !story.audioURL) {
       throw new Error("Invalid story data");
     }
+    console.log("STORY IMAGE: " + story.image);
     const newStoryRef = doc(audioCollection);
     const storyID = newStoryRef.id;
 
@@ -283,6 +288,7 @@ export const saveAudioStory = async (story) => {
       title: story.title,
       userID: userID,
       audioURL: story.audioURL,
+      imageURL: story.image,
       coordinates: story.coordinates,
       storyID: storyID,
       createdAt: new Date(),
@@ -368,6 +374,12 @@ export const getAllAudioStories = async () => {
 
 export const getAudio = (audioURL) => {
   const storageRef = ref(storage, audioURL);
+  const url = getDownloadURL(storageRef);
+  return url;
+};
+
+export const getImage = (imageURL) => {
+  const storageRef = ref(storage, imageURL);
   const url = getDownloadURL(storageRef);
   return url;
 };

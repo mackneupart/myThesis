@@ -9,13 +9,14 @@ import {
 import { getAllStories, getAllAudioStories } from "./config/Database";
 import React, { useState, useEffect } from "react";
 import * as Location from "expo-location";
+import { useFocusEffect } from "@react-navigation/native"; // Import the useFocusEffect hook
 
 export default function Feed({ navigation }) {
   const [stories, setStories] = useState([]);
   const [audioStories, setAudioStories] = useState([]);
   const [locationInfo, setLocationInfo] = useState([]);
   const [locationInfoAudio, setLocationInfoAudio] = useState([]);
-
+  const [currentLocation, setCurrentLocation] = useState(undefined);
   const [refreshing, setRefreshing] = useState(false);
 
   useEffect(() => {
@@ -31,6 +32,7 @@ export default function Feed({ navigation }) {
     };
     getAudiostories();
   }, []);
+
   useEffect(() => {
     const fetchLocationInfo = async () => {
       const locationInfo = await Promise.all(
@@ -65,6 +67,22 @@ export default function Feed({ navigation }) {
     fetchLocationInfoAudio();
   }, [audioStories]);
 
+  useFocusEffect(
+    React.useCallback(() => {
+      const getCurrentLocation = async () => {
+        try {
+          const { coords } = await Location.getCurrentPositionAsync();
+          const { latitude, longitude } = coords;
+          setCurrentLocation({ latitude, longitude });
+        } catch (error) {
+          console.log("Error getting location:", error);
+        }
+      };
+
+      getCurrentLocation();
+    }, [])
+  );
+
   const fetchReverseGeocode = async (latitude, longitude) => {
     const reverseGeocodeAddress = await Location.reverseGeocodeAsync({
       latitude: latitude,
@@ -74,14 +92,45 @@ export default function Feed({ navigation }) {
     return formattedAddress;
   };
 
+  function calculateDistance(lat1, lon1, lat2, lon2) {
+    const earthRadiusKm = 6371; // Radius of the Earth in kilometers
+    const dLat = (lat2 - lat1) * (Math.PI / 180); // Latitude difference in radians
+    const dLon = (lon2 - lon1) * (Math.PI / 180); // Longitude difference in radians
+
+    // Haversine formula
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * (Math.PI / 180)) *
+        Math.cos(lat2 * (Math.PI / 180)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = earthRadiusKm * c; // Distance in kilometers
+
+    return distance;
+  }
+
   const handleNavigation = (story) => {
-    navigation.navigate("Story", { story });
+    const distance = calculateDistance(
+      currentLocation.latitude,
+      currentLocation.longitude,
+      story.coordinates[0],
+      story.coordinates[1]
+    );
+    if (distance < 0.5) {
+      navigation.navigate("Story", { story });
+    } else {
+      alert("You are too far away from the story to read it.");
+    }
   };
 
   const onRefresh = async () => {
     setRefreshing(true);
     // Fetch new data or update your stories here
     const newStories = await getAllStories();
+    const newAudioStories = await getAllAudioStories();
+    setAudioStories(newAudioStories);
     setStories(newStories);
     setRefreshing(false);
   };
@@ -108,7 +157,7 @@ export default function Feed({ navigation }) {
                 onPress={() => handleNavigation(item.story)}>
                 <View style={styles.storyContainer}>
                   <Text style={styles.textTitle}>{item.story.title} </Text>
-                  <Text>Location: {item.address}</Text>
+                  <Text style={styles.textViews}>Location: {item.address}</Text>
                 </View>
               </TouchableOpacity>
             ))}
@@ -121,7 +170,7 @@ export default function Feed({ navigation }) {
                 onPress={() => handleNavigation(item.story)}>
                 <View style={styles.storyContainer}>
                   <Text style={styles.textTitle}>{item.story.title} </Text>
-                  <Text>Location: {item.address}</Text>
+                  <Text style={styles.textViews}>Location: {item.address}</Text>
                 </View>
               </TouchableOpacity>
             ))}
@@ -136,7 +185,6 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "whitesmoke",
-    fontSize: 40,
   },
 
   logoBox: {
@@ -156,11 +204,15 @@ const styles = StyleSheet.create({
   },
   textHeader: {
     marginTop: 30,
-    fontSize: 40,
+    fontSize: 35,
     fontFamily: "KaiseiTokumin-Regular",
   },
   textTitle: {
-    fontSize: 25,
+    fontSize: 20,
+    fontFamily: "KaiseiTokumin-Regular",
+  },
+  textViews: {
+    fontSize: 14,
     fontFamily: "KaiseiTokumin-Regular",
   },
   scrollContainer: {

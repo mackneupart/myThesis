@@ -37,19 +37,21 @@ export default function Map({ navigation }) {
     requestLocationPermission();
   }, []);
 
-  useEffect(() => {
-    const getCurrentLocation = async () => {
-      try {
-        const { coords } = await Location.getCurrentPositionAsync();
-        const { latitude, longitude } = coords;
-        setCurrentLocation({ latitude, longitude });
-      } catch (error) {
-        console.log("Error getting location:", error);
-      }
-    };
+  useFocusEffect(
+    React.useCallback(() => {
+      const getCurrentLocation = async () => {
+        try {
+          const { coords } = await Location.getCurrentPositionAsync();
+          const { latitude, longitude } = coords;
+          setCurrentLocation({ latitude, longitude });
+        } catch (error) {
+          console.log("Error getting location:", error);
+        }
+      };
 
-    getCurrentLocation();
-  }, []);
+      getCurrentLocation();
+    }, [])
+  );
 
   useFocusEffect(
     React.useCallback(() => {
@@ -73,8 +75,36 @@ export default function Map({ navigation }) {
     console.log("Current Location:", currentLocation);
   }, [currentLocation]);
 
+  function calculateDistance(lat1, lon1, lat2, lon2) {
+    const earthRadiusKm = 6371; // Radius of the Earth in kilometers
+    const dLat = (lat2 - lat1) * (Math.PI / 180); // Latitude difference in radians
+    const dLon = (lon2 - lon1) * (Math.PI / 180); // Longitude difference in radians
+
+    // Haversine formula
+    const a =
+      Math.sin(dLat / 2) * Math.sin(dLat / 2) +
+      Math.cos(lat1 * (Math.PI / 180)) *
+        Math.cos(lat2 * (Math.PI / 180)) *
+        Math.sin(dLon / 2) *
+        Math.sin(dLon / 2);
+
+    const c = 2 * Math.atan2(Math.sqrt(a), Math.sqrt(1 - a));
+    const distance = earthRadiusKm * c; // Distance in kilometers
+
+    return distance;
+  }
   const handleMarkerPress = (story) => {
-    navigation.navigate("Story", { story });
+    const distance = calculateDistance(
+      currentLocation.latitude,
+      currentLocation.longitude,
+      story.coordinates[0],
+      story.coordinates[1]
+    );
+    if (distance < 0.5) {
+      navigation.navigate("Story", { story });
+    } else {
+      alert("You are too far away from the story to read it.");
+    }
   };
 
   return (
@@ -129,7 +159,7 @@ export default function Map({ navigation }) {
       </View>
       {username && (
         <View style={styles.addButtonContainer}>
-          <PopUpAdd />
+          <PopUpAdd navigation={navigation} />
         </View>
       )}
     </View>

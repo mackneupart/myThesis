@@ -9,6 +9,7 @@ import {
 import * as Location from "expo-location";
 import { useEffect, useState } from "react";
 import { Audio } from "expo-av";
+import { getImage } from "./config/Database";
 
 export default function Story({ route }) {
   const { story } = route.params;
@@ -17,6 +18,7 @@ export default function Story({ route }) {
   const [audioDuration, setAudioDuration] = useState(0);
   const [isPlaying, setIsPlaying] = useState(false);
   const [soundObject, setSoundObject] = useState(null);
+  const [image, setImage] = useState(null);
 
   useEffect(() => {
     const reverseGeocode = async () => {
@@ -33,6 +35,18 @@ export default function Story({ route }) {
 
     if (story.audioURL) {
       setIsAudio(true);
+    }
+    if (story.imageURL) {
+      const fetchImage = async () => {
+        try {
+          const image = await getImage(story.imageURL);
+          setImage(image);
+          console.log("Image Data:", image); // Move the log here
+        } catch (error) {
+          console.log("error fetching image " + error);
+        }
+      };
+      fetchImage();
     }
   }, []);
 
@@ -106,7 +120,12 @@ export default function Story({ route }) {
   return (
     <View style={styles.container}>
       <View style={styles.infoContainer}>
-        <Text style={styles.textHeader}>Title: {story.title}</Text>
+        <Text style={styles.textHeader}> {story.title}</Text>
+        {image && (
+          <View>
+            <Image source={{ uri: image }} style={styles.imageURL} />
+          </View>
+        )}
         <Text style={styles.infoText}>Author: {story.author}</Text>
         <Text style={styles.infoText}>Address: {address}</Text>
       </View>
@@ -169,5 +188,12 @@ const styles = StyleSheet.create({
     paddingRight: 20,
     paddingLeft: 20,
     marginBottom: 20,
+  },
+  imageURL: {
+    width: 200,
+    height: 200,
+    alignSelf: "center",
+    marginTop: 10,
+    marginBottom: 10,
   },
 });

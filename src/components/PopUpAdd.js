@@ -10,11 +10,10 @@ import {
 } from "react-native";
 import { useState, useEffect } from "react";
 import * as Location from "expo-location";
-import { saveStory, saveAudioStory } from "../config/Database";
+import { saveStory, saveAudioStory, uploadPhoto } from "../config/Database";
 import AudioRecording from "./AudioRecording";
-import { ReemKufiInk_400Regular } from "@expo-google-fonts/dev";
 
-export default function PopUpAdd() {
+export default function PopUpAdd({ navigation }) {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [title, settitle] = useState("");
   const [description, setDescription] = useState("");
@@ -25,6 +24,8 @@ export default function PopUpAdd() {
   const [isTextChecked, setIsTextChecked] = useState(true);
   const [isAudioChecked, setIsAudioChecked] = useState(false);
   const [receivedAudioFile, setReceivedAudioFile] = useState(null);
+  const [image, setImage] = useState(null);
+  const [imageURL, setImageURL] = useState(null);
 
   useEffect(() => {
     const getCurrentLocation = async () => {
@@ -42,6 +43,18 @@ export default function PopUpAdd() {
   useEffect(() => {
     console.log("Current Location:", currentLocation);
   }, [currentLocation]);
+
+  useEffect(() => {
+    const fetchImage = async () => {
+      try {
+        const imageURL = await uploadPhoto(image);
+        setImageURL(imageURL);
+      } catch (error) {
+        console.log("ERROR fetching imageURL " + error);
+      }
+      fetchImage();
+    };
+  }, [image]);
 
   useEffect(() => {
     const geoCodeLocation = async () => {
@@ -69,6 +82,7 @@ export default function PopUpAdd() {
       title: title,
       description: description,
       coordinates: coordinates,
+      image: imageURL,
     };
     console.log(story.title, story.description, story.coordinates);
     try {
@@ -91,11 +105,6 @@ export default function PopUpAdd() {
     }
   };
 
-  const dismissKeyboard = () => {
-    // Handle the "Done" button press
-    Keyboard.dismiss(); // Close the keyboard
-  };
-
   const openPopup = () => {
     setIsPopupVisible(true);
   };
@@ -116,20 +125,30 @@ export default function PopUpAdd() {
     setReceivedAudioFile(audioData);
   };
 
+  const handleNavigation = () => {
+    navigation.navigate("CameraComponent", {
+      updatePopupVisibility: setIsPopupVisible,
+      updateImage: setImage,
+      updateImageURL: setImageURL,
+    });
+    setIsPopupVisible(false);
+  };
+
   const handleAudioSubmit = async () => {
     const coordinates = [latitude, longitude];
     const audioURL = receivedAudioFile;
-    console.log(audioURL);
     const story = {
       title: title,
       audioURL: audioURL,
       coordinates: coordinates,
+      image: imageURL,
     };
     console.log(story.title, story.audioURL, story.coordinates);
     try {
       await saveAudioStory(story);
       settitle("");
       setTextLocation("");
+      setImage(null);
       setIsPopupVisible(false);
     } catch (error) {
       alert("Something went wrong with saving the story");
@@ -176,7 +195,26 @@ export default function PopUpAdd() {
               </View>
             </View>
             <View>
-              <Text>Title:</Text>
+              <TouchableOpacity
+                onPress={() => {
+                  handleNavigation();
+                }}>
+                <Image
+                  source={require("../assets/icons/cameraplus.png")}
+                  style={{
+                    height: 50,
+                    width: 50,
+                    marginTop: 10,
+                    marginBottom: 10,
+                    tintColor: "#8F5AFF",
+                  }}
+                />
+                {image && (
+                  <Text style={{ color: "blue", marginBottom: 20 }}>
+                    {image.split("-")[13]}
+                  </Text>
+                )}
+              </TouchableOpacity>
               <TextInput
                 style={styles.input}
                 placeholder="Enter title"

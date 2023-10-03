@@ -13,7 +13,6 @@ import * as Location from "expo-location";
 import { saveStory } from "../config/Database";
 import CameraComponent from "./CameraComponent";
 import { storage, storageRef } from "../config/Firebase";
-import AddPhoto from "./AddPhoto";
 
 export default function AddStory({ onClose, navigation }) {
   const [title, settitle] = useState("");
@@ -96,9 +95,7 @@ export default function AddStory({ onClose, navigation }) {
         <Text style={styles.textHeader}>Add your story to the map!</Text>
         <Text>Upload photo:</Text>
 
-        <TouchableOpacity>
-          <Text onPress={() => navigation.navigate("AddPhoto")}>Add photo</Text>
-        </TouchableOpacity>
+        <TouchableOpacity></TouchableOpacity>
         <Text>Title:</Text>
         <TextInput
           style={styles.input}

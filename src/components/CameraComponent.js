@@ -1,10 +1,13 @@
-import React, { useState, useEffect } from "react";
-import { View, Text, TouchableOpacity, StyleSheet } from "react-native";
+import { useEffect, useState, useRoute } from "react";
+import { Button, StyleSheet, Text, View, Image } from "react-native";
+import { uploadPhoto } from "../config/Database";
 import { Camera } from "expo-camera";
+import CustomButton from "./customButton";
 
-export default function CameraComponent() {
+export default function CameraComponent({ route, navigation }) {
   const [hasPermission, setHasPermission] = useState(null);
-  const [type, setType] = useState(Camera.Constants.Type.back);
+  const [cameraRef, setCameraRef] = useState(null);
+  const [capturedImage, setCapturedImage] = useState(null);
 
   useEffect(() => {
     (async () => {
@@ -13,49 +16,98 @@ export default function CameraComponent() {
     })();
   }, []);
 
-  if (hasPermission === null) {
-    console.log("camera accepted");
-    return <View />;
-  }
-  if (hasPermission === false) {
-    console.log("camera denied");
-    return <Text>No access to camera</Text>;
-  }
+  const handleTakePhoto = async () => {
+    if (cameraRef) {
+      const photo = await cameraRef.takePictureAsync();
+      setCapturedImage(photo.uri);
+    }
+  };
+
+  const handleRetakePhoto = () => {
+    setCapturedImage(null);
+  };
+
+  const handleSavePhoto = async () => {
+    if (capturedImage) {
+      // Upload the photo and get the URL
+      const imageURL = await uploadPhoto(capturedImage);
+
+      // Update the image URL and image state
+      route.params.updateImage(capturedImage);
+      route.params.updateImageURL(imageURL);
+    }
+
+    route.params.updatePopupVisibility(true);
+    navigation.goBack();
+  };
 
   return (
-    <View style={{ flex: 1 }}>
-      <Camera style={{ flex: 1 }} type={type}>
-        <View style={styles.cameraView}>
-          <TouchableOpacity
-            style={styles.cameraButton}
-            onPress={() => {
-              setType(
-                type === Camera.Constants.Type.back
-                  ? Camera.Constants.Type.front
-                  : Camera.Constants.Type.back
-              );
-            }}>
-            <Text style={styles.cameraText}>Flip</Text>
-          </TouchableOpacity>
-        </View>
-      </Camera>
+    <View style={styles.container}>
+      {hasPermission === null ? (
+        <Text>Requesting camera permission...</Text>
+      ) : hasPermission === false ? (
+        <Text>No access to camera</Text>
+      ) : (
+        <>
+          {!capturedImage ? (
+            <View>
+              <Camera
+                style={styles.camera}
+                ref={(ref) => setCameraRef(ref)}
+                type={Camera.Constants.Type.back}></Camera>
+              <CustomButton
+                text="take photo"
+                onPress={handleTakePhoto}
+                textColor="white"
+                bgColor={"#8F5AFF"}
+              />
+            </View>
+          ) : (
+            <>
+              <Image
+                source={{ uri: capturedImage }}
+                style={styles.previewImage}
+              />
+              <View style={styles.buttonContainer}>
+                <CustomButton
+                  text="retake"
+                  onPress={handleRetakePhoto}
+                  textColor="white"
+                  bgColor={"#8F5AFF"}
+                />
+                <CustomButton
+                  text="save"
+                  onPress={handleSavePhoto}
+                  textColor="white"
+                  bgColor={"#8F5AFF"}
+                />
+              </View>
+            </>
+          )}
+        </>
+      )}
     </View>
   );
 }
 
 const styles = StyleSheet.create({
-  cameraView: {
+  container: {
     flex: 1,
-    backgroundColor: "black",
-    flexDirection: "row",
-  },
-  cameraButton: {
-    flex: 0.1,
-    alignSelf: "flex-end",
     alignItems: "center",
+    justifyContent: "center",
   },
-  cameraText: {
-    fontSize: 18,
-    color: "black",
+  camera: {
+    width: 300,
+    height: 300,
+    marginBottom: 20,
+  },
+  previewImage: {
+    width: 300,
+    height: 300,
+    marginBottom: 20,
+  },
+  buttonContainer: {
+    flexDirection: "row",
+    justifyContent: "space-between",
   },
 });

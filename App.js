@@ -1,4 +1,4 @@
-import { StyleSheet, ActivityIndicator } from "react-native";
+import { StyleSheet, ActivityIndicator, BackHandler } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Login from "./src/Login";
@@ -8,8 +8,7 @@ import NavigationTab from "./src/components/NavigationTab"; // Import the Naviga
 import { getUser } from "./src/config/Database";
 import { useEffect, useState } from "react";
 import Story from "./src/Story";
-import CameraScreen from "./src/components/CameraComponent";
-import AddPhoto from "./src/components/AddPhoto";
+import CameraComponent from "./src/components/CameraComponent";
 import PopUpAdd from "./src/components/PopUpAdd";
 
 const Stack = createNativeStackNavigator();
@@ -66,11 +65,10 @@ export default function App() {
               component={Map}
               options={{ title: "Map", headerShown: false }}
             />
-            <Stack.Screen name="Camera" component={CameraScreen} />
             <Stack.Screen
-              name="AddPhoto"
-              component={AddPhoto}
-              options={{ title: "Map", headerShown: false }}
+              name="CameraComponent"
+              component={CameraComponent}
+              options={{ title: "CameraComponent" }}
             />
           </>
         ) : (
