@@ -119,41 +119,41 @@ export default function Story({ route }) {
 
   return (
     <View style={styles.container}>
-      <View style={styles.infoContainer}>
-        <Text style={styles.textHeader}> {story.title}</Text>
-        {image && (
-          <View>
-            <Image source={{ uri: image }} style={styles.imageURL} />
-          </View>
-        )}
-        <Text style={styles.infoText}>Author: {story.author}</Text>
-        <Text style={styles.infoText}>Address: {address}</Text>
-      </View>
-      {isAudio ? (
-        <View>
-          <View
-            style={{
-              flexDirection: "row",
-              justifyContent: "center",
-              marginTop: 50,
-            }}>
-            <Image source={require("./assets/icons/speaker.png")} />
-            <Button
-              onPress={() => {
-                playAudio();
-              }}
-              title={isPlaying ? "Pause" : "Play"}
-            />
-          </View>
-          <Text style={{ alignSelf: "center" }}>
-            Duration: {formatDuration(audioDuration)}
-          </Text>
+      <ScrollView style={styles.scrollContainer}>
+        <View style={styles.infoContainer}>
+          <Text style={styles.textHeader}> {story.title}</Text>
+          {image && (
+            <View>
+              <Image source={{ uri: image }} style={styles.imageURL} />
+            </View>
+          )}
+          <Text style={styles.infoText}>Author: {story.author}</Text>
+          <Text style={styles.infoText}>Address: {address}</Text>
         </View>
-      ) : (
-        <ScrollView style={styles.scrollContainer}>
+        {isAudio ? (
+          <View>
+            <View
+              style={{
+                flexDirection: "row",
+                justifyContent: "center",
+                marginTop: 50,
+              }}>
+              <Image source={require("./assets/icons/speaker.png")} />
+              <Button
+                onPress={() => {
+                  playAudio();
+                }}
+                title={isPlaying ? "Pause" : "Play"}
+              />
+            </View>
+            <Text style={{ alignSelf: "center" }}>
+              Duration: {formatDuration(audioDuration)}
+            </Text>
+          </View>
+        ) : (
           <Text style={styles.textDescription}>{`"${story.description}"`}</Text>
-        </ScrollView>
-      )}
+        )}
+      </ScrollView>
     </View>
   );
 }
@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
   textHeader: {
     fontFamily: "KaiseiTokumin-Regular",
     color: "#8F5AFF",
-    fontSize: 30,
+    fontSize: 25,
   },
   textDescription: {
     fontFamily: "KaiseiTokumin-Regular",
