@@ -130,7 +130,7 @@ export default function Map({ navigation }) {
               latitude: story.coordinates[0],
               longitude: story.coordinates[1],
             }}
-            pinColor="blue"
+            pinColor="red"
             title={story.title}>
             <Callout onPress={() => handleMarkerPress(story)}>
               <Text>{story.title}</Text>
