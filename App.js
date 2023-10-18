@@ -10,6 +10,7 @@ import { useEffect, useState } from "react";
 import Story from "./src/Story";
 import CameraComponent from "./src/components/CameraComponent";
 import PopUpAdd from "./src/components/PopUpAdd";
+import AddLocationMap from "./src/components/AddLocationMap";
 
 const Stack = createNativeStackNavigator();
 
@@ -69,6 +70,11 @@ export default function App() {
               name="CameraComponent"
               component={CameraComponent}
               options={{ title: "CameraComponent" }}
+            />
+            <Stack.Screen
+              name="AddLocationMap"
+              component={AddLocationMap}
+              options={{ title: "AddLocationMap" }}
             />
           </>
         ) : (

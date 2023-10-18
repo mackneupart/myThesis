@@ -63,7 +63,6 @@ export default function PopUpAdd({ navigation }) {
         if (location && location.length > 0) {
           const { latitude, longitude } = location[0];
           console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
-          // Do something with latitude and longitude
           setLatitude(latitude);
           setLongitude(longitude);
         } else {
@@ -90,6 +89,7 @@ export default function PopUpAdd({ navigation }) {
       settitle("");
       setDescription("");
       setTextLocation("");
+      setImageURL(null);
       setIsPopupVisible(false);
     } catch (error) {
       alert("Something went wrong with saving the story");
@@ -110,6 +110,10 @@ export default function PopUpAdd({ navigation }) {
   };
 
   const closePopup = () => {
+    settitle("");
+    setDescription("");
+    setTextLocation("");
+    setImageURL(null);
     setIsPopupVisible(false);
   };
   const handleTextRadio = () => {
@@ -125,11 +129,18 @@ export default function PopUpAdd({ navigation }) {
     setReceivedAudioFile(audioData);
   };
 
-  const handleNavigation = () => {
+  const handleNavigationCamera = () => {
     navigation.navigate("CameraComponent", {
       updatePopupVisibility: setIsPopupVisible,
       updateImage: setImage,
       updateImageURL: setImageURL,
+    });
+    setIsPopupVisible(false);
+  };
+  const handleNavigationMap = () => {
+    navigation.navigate("AddLocationMap", {
+      updatePopupVisibility: setIsPopupVisible,
+      updateLocation: setTextLocation,
     });
     setIsPopupVisible(false);
   };
@@ -149,6 +160,7 @@ export default function PopUpAdd({ navigation }) {
       settitle("");
       setTextLocation("");
       setImage(null);
+      setImageURL(null);
       setIsPopupVisible(false);
     } catch (error) {
       alert("Something went wrong with saving the story");
@@ -197,7 +209,7 @@ export default function PopUpAdd({ navigation }) {
             <View>
               <TouchableOpacity
                 onPress={() => {
-                  handleNavigation();
+                  handleNavigationCamera();
                 }}>
                 <Image
                   source={require("../assets/icons/cameraplus.png")}
@@ -209,9 +221,10 @@ export default function PopUpAdd({ navigation }) {
                     tintColor: "#8F5AFF",
                   }}
                 />
-                {image && (
-                  <Text style={{ color: "blue", marginBottom: 20 }}>
-                    {image.split("-")[13]}
+                {imageURL && (
+                  <Text
+                    style={{ color: "blue", marginBottom: 20, maxWidth: 200 }}>
+                    {imageURL.split("/")[imageURL.split("/").length - 1]}
                   </Text>
                 )}
               </TouchableOpacity>
@@ -242,22 +255,24 @@ export default function PopUpAdd({ navigation }) {
                 <AudioRecording handleAudioRecording={handleAudioRecording} />
               </View>
             )}
-            <View>
-              <Text>Address {"(street name, city)"}:</Text>
 
-              <TextInput
-                style={styles.input}
-                placeholder="Enter location"
-                onChangeText={(text) => setTextLocation(text)}
-              />
+            <TouchableOpacity onPress={handleNavigationMap}>
+              <Text
+                style={{
+                  fontSize: 18,
+                  color: "#8F5AFF",
+                  fontWeight: "bold",
+                }}>
+                Add location
+              </Text>
+            </TouchableOpacity>
+            <View style={{ marginBottom: 40 }}>
+              <Text>Address {"(street name, city)"}:</Text>
+              {textLocation && (
+                <Text style={{ color: "blue" }}>{textLocation}</Text>
+              )}
             </View>
 
-            {/* <TouchableOpacity onPress={useCurrentLocation}>
-              <Text>Use current location</Text>
-            </TouchableOpacity>
-
-            <Text>latitude: {latitude}</Text>
-            <Text>longitude: {longitude}</Text> */}
             <View style={styles.buttonContainer}>
               {isTextChecked ? (
                 <TouchableOpacity
