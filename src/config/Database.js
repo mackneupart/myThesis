@@ -181,7 +181,7 @@ export const saveStory = async (story) => {
 
   try {
     if (!story.title || !story.description || !story.coordinates) {
-      alert("Please filluot title, description and coordinates");
+      alert("Please filluot title, description and add a location");
       throw new Error("Invalid story data");
     }
     console.log("STORY IMAGE: " + story.image);

@@ -7,7 +7,6 @@ export default function SignUp({ navigation }) {
   const [username, setUsername] = useState("");
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [repPassword, setRepPassword] = useState("");
 
   const handleSignUp = async () => {
     console.log(email);
@@ -51,13 +50,6 @@ export default function SignUp({ navigation }) {
         placeholder="Enter your password"
         secureTextEntry={true}
         onChangeText={(text) => setPassword(text)}
-        value={password}
-      />
-      <TextInput
-        style={styles.input}
-        placeholder="Enter your password"
-        secureTextEntry={true}
-        onChangeText={(text) => setRepPassword(text)}
         value={password}
       />
 

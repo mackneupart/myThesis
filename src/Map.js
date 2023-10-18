@@ -1,11 +1,10 @@
 import { StatusBar } from "expo-status-bar";
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
+import { StyleSheet, Text, View } from "react-native";
 import MapView, { Marker, Callout } from "react-native-maps";
 import * as Location from "expo-location";
 import {
   getAllStories,
-  getUser,
   getUserDetails,
   getAllAudioStories,
 } from "./config/Database";
@@ -39,17 +38,23 @@ export default function Map({ navigation }) {
 
   useFocusEffect(
     React.useCallback(() => {
-      const getCurrentLocation = async () => {
-        try {
-          const { coords } = await Location.getCurrentPositionAsync();
-          const { latitude, longitude } = coords;
-          setCurrentLocation({ latitude, longitude });
-        } catch (error) {
-          console.log("Error getting location:", error);
-        }
+      const watchLocation = async () => {
+        //watch the user's location
+        Location.watchPositionAsync(
+          {
+            accuracy: Location.Accuracy.BestForNavigation,
+            timeInterval: 1000,
+          },
+          (location) => {
+            //callback function to set new location every time the user moves
+            const { coords } = location;
+            const { latitude, longitude } = coords;
+            setCurrentLocation({ latitude, longitude }); //set current locaiton
+          }
+        );
       };
 
-      getCurrentLocation();
+      watchLocation();
     }, [])
   );
 
@@ -125,7 +130,7 @@ export default function Map({ navigation }) {
               latitude: story.coordinates[0],
               longitude: story.coordinates[1],
             }}
-            pinColor={story.pinColor}
+            pinColor="blue"
             title={story.title}>
             <Callout onPress={() => handleMarkerPress(story)}>
               <Text>{story.title}</Text>
