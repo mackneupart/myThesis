@@ -8,7 +8,7 @@ export default function AudioRecording({ handleAudioRecording }) {
   const [recording, setRecording] = useState(null);
   const [isRecording, setIsRecording] = useState(false);
   const [message, setMessage] = useState("");
-  const [realRecording, setRealRecording] = useState(null);
+  const [audioFile, setAudioFile] = useState(null);
   const [isUploaded, setIsUploaded] = useState(false);
 
   async function startRecording() {
@@ -51,7 +51,7 @@ export default function AudioRecording({ handleAudioRecording }) {
       playThroughEarpieceAndroid: false,
     });
 
-    setRealRecording(updatedRecording);
+    setAudioFile(updatedRecording);
   }
 
   function getDurationFormatted(millis) {
@@ -79,20 +79,20 @@ export default function AudioRecording({ handleAudioRecording }) {
         {isUploaded ? (
           <Text>
             {" "}
-            Recording - {realRecording.duration} {"\n "}
+            Recording - {audioFile.duration} {"\n "}
             audio uploaded
           </Text>
         ) : (
           <View>
             <Text style={styles.fill}>
-              Your recording - {realRecording.duration}
+              Your recording - {audioFile.duration}
             </Text>
             <View style={{ flexDirection: "row" }}>
               <Button
-                onPress={() => realRecording.sound.replayAsync()}
+                onPress={() => audioFile.sound.replayAsync()}
                 title="Play"></Button>
               <Button
-                onPress={() => handleUpload(realRecording)}
+                onPress={() => handleUpload(audioFile)}
                 title="Upload"></Button>
             </View>
           </View>
@@ -111,7 +111,7 @@ export default function AudioRecording({ handleAudioRecording }) {
           onPress={isRecording ? stopRecording : startRecording}
         />
       </View>
-      {realRecording && getRecording()}
+      {audioFile && getRecording()}
       <StatusBar style="auto" />
     </View>
   );

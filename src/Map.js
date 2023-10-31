@@ -1,8 +1,8 @@
-import { StatusBar } from "expo-status-bar";
 import React, { useState, useEffect } from "react";
-import { StyleSheet, Text, View } from "react-native";
+import { StyleSheet, Text, View, Image } from "react-native";
 import MapView, { Marker, Callout } from "react-native-maps";
 import * as Location from "expo-location";
+
 import {
   getAllStories,
   getUserDetails,
@@ -38,20 +38,29 @@ export default function Map({ navigation }) {
 
   useFocusEffect(
     React.useCallback(() => {
+      let subscription = null; // Initialize the subscription variable
+
       const watchLocation = async () => {
         //watch the user's location
-        Location.watchPositionAsync(
+        subscription = Location.watchPositionAsync(
           {
             accuracy: Location.Accuracy.BestForNavigation,
+            distanceInterval: 5,
             timeInterval: 1000,
           },
           (location) => {
-            //callback function to set new location every time the user moves
+            //sets the current posistion to the user's location
             const { coords } = location;
             const { latitude, longitude } = coords;
             setCurrentLocation({ latitude, longitude }); //set current locaiton
           }
         );
+
+        return () => {
+          // Cleanup: Remove the subscription when the component is not in focus
+          subscription.remove();
+          console.log("stopped");
+        };
       };
 
       watchLocation();
@@ -155,8 +164,12 @@ export default function Map({ navigation }) {
           <Marker
             coordinate={currentLocation}
             pinColor="blue"
-            title="You are here"
-          />
+            title="You are here">
+            <Image
+              source={require("./assets/icons/person.png")} // Replace with the actual path to your custom icon
+              style={{ width: 40, height: 60 }} // Customize the size of the icon
+            />
+          </Marker>
         )}
       </MapView>
       <View style={styles.logoBox}>

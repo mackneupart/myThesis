@@ -16,7 +16,15 @@
     ],
     "ios": {
       "supportsTablet": true,
-      "bundleIdentifier": "com.mackneupart.queerannotations"
+      "bundleIdentifier": "com.mackneupart.queerannotations",
+      "infoPlist": {
+        "NSLocationWhenInUseUsageDescription": "This app needs access to your location to be able to function purposes.",
+        "NSLocationAlwaysAndWhenInUseUsageDescription": "This app needs continuous access to your location for ABC reasons.",
+        "UIBackgroundModes": [
+          "location",
+          "fetch"
+        ]
+      }
     },
     "android": {
       "adaptiveIcon": {

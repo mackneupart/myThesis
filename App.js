@@ -9,7 +9,6 @@ import { getUser } from "./src/config/Database";
 import { useEffect, useState } from "react";
 import Story from "./src/Story";
 import CameraComponent from "./src/components/CameraComponent";
-import PopUpAdd from "./src/components/PopUpAdd";
 import AddLocationMap from "./src/components/AddLocationMap";
 
 const Stack = createNativeStackNavigator();
