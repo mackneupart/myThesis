@@ -121,34 +121,3 @@ const styles = StyleSheet.create({
     color: "blue",
   },
 });
-
-{
-  /* <Stack.Screen
-            name="Map"
-            component={Map}
-            options={{ title: "Map" }}
-            headerShown={false}
-          />
-          <Stack.Screen
-            name="About"
-            component={About}
-            options={{ title: "About" }}
-          />
-          <Stack.Screen
-            name="SignUp"
-            component={SignUp}
-            options={{
-              title: "SignUp",
-              headerShown: false,
-            }}
-          />
-          <Stack.Screen
-            name="Profile"
-            component={Profile}
-            options={{
-              title: "Profile",
-              headerShown: false,
-              // gestureEnabled: false,
-            }}
-          /> */
-}
