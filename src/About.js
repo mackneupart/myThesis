@@ -1,4 +1,3 @@
-import { Marker } from "react-native-maps";
 import { StyleSheet, Text, View, ScrollView } from "react-native";
 
 export default function About({ route }) {

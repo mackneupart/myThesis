@@ -21,28 +21,29 @@ export default function PopUpAdd({ navigation }) {
   const [longitude, setLongitude] = useState(0);
   const [currentLocation, setCurrentLocation] = useState(null);
   const [textLocation, setTextLocation] = useState("");
+  const [location, setLocation] = useState(null);
   const [isTextChecked, setIsTextChecked] = useState(true);
   const [isAudioChecked, setIsAudioChecked] = useState(false);
   const [receivedAudioFile, setReceivedAudioFile] = useState(null);
   const [image, setImage] = useState(null);
   const [imageURL, setImageURL] = useState(null);
 
-  useEffect(() => {
-    const getCurrentLocation = async () => {
-      try {
-        const { coords } = await Location.getCurrentPositionAsync();
-        const { latitude, longitude } = coords;
-        setCurrentLocation({ latitude, longitude });
-      } catch (error) {
-        console.log("Error getting location:", error);
-      }
-    };
-    getCurrentLocation();
-  }, []);
+  // useEffect(() => {
+  //   const getCurrentLocation = async () => {
+  //     try {
+  //       const { coords } = await Location.getCurrentPositionAsync();
+  //       const { latitude, longitude } = coords;
+  //       setCurrentLocation({ latitude, longitude });
+  //     } catch (error) {
+  //       console.log("Error getting location:", error);
+  //     }
+  //   };
+  //   getCurrentLocation();
+  // }, []);
 
-  useEffect(() => {
-    console.log("Current Location:", currentLocation);
-  }, [currentLocation]);
+  // useEffect(() => {
+  //   console.log("Current Location:", currentLocation);
+  // }, [currentLocation]);
 
   useEffect(() => {
     const fetchImage = async () => {
@@ -52,31 +53,29 @@ export default function PopUpAdd({ navigation }) {
       } catch (error) {
         console.log("ERROR fetching imageURL " + error);
       }
+
       fetchImage();
     };
   }, [image]);
 
   useEffect(() => {
-    const geoCodeLocation = async () => {
-      try {
-        const location = await Location.geocodeAsync(textLocation);
-        if (location && location.length > 0) {
-          const { latitude, longitude } = location[0];
-          console.log(`Latitude: ${latitude}, Longitude: ${longitude}`);
-          setLatitude(latitude);
-          setLongitude(longitude);
-        } else {
-          console.log("Location not found");
+    if (location) {
+      const getNaturalLocation = async () => {
+        const geocode = await Location.reverseGeocodeAsync(location);
+
+        if (geocode.length > 0) {
+          const formattedAddress = `${geocode[0].street}, ${geocode[0].city}`;
+          setTextLocation(formattedAddress);
         }
-      } catch (error) {
-        console.error("Error geocoding address:", error);
-      }
-    };
-    geoCodeLocation();
-  }, [textLocation]);
+
+        return "Unknown Location";
+      };
+      getNaturalLocation();
+    }
+  }, [location]);
 
   const handleSubmit = async () => {
-    const coordinates = [latitude, longitude];
+    const coordinates = [location.latitude, location.longitude];
     const story = {
       title: title,
       description: description,
@@ -97,13 +96,13 @@ export default function PopUpAdd({ navigation }) {
     }
   };
 
-  const useCurrentLocation = () => {
-    if (currentLocation !== null) {
-      setLatitude(currentLocation.latitude);
-      setLongitude(currentLocation.longitude);
-      setCurrentLocation({ latitude, longitude });
-    }
-  };
+  // const useCurrentLocation = () => {
+  //   if (currentLocation !== null) {
+  //     setLatitude(currentLocation.latitude);
+  //     setLongitude(currentLocation.longitude);
+  //     setCurrentLocation({ latitude, longitude });
+  //   }
+  // };
 
   const openPopup = () => {
     setIsPopupVisible(true);
@@ -140,13 +139,13 @@ export default function PopUpAdd({ navigation }) {
   const handleNavigationMap = () => {
     navigation.navigate("AddLocationMap", {
       updatePopupVisibility: setIsPopupVisible,
-      updateLocation: setTextLocation,
+      updateLocation: setLocation,
     });
     setIsPopupVisible(false);
   };
 
   const handleAudioSubmit = async () => {
-    const coordinates = [latitude, longitude];
+    const coordinates = [location.latitude, location.longitude];
     const audioURL = receivedAudioFile;
     const story = {
       title: title,
@@ -244,9 +243,15 @@ export default function PopUpAdd({ navigation }) {
                   value={description}
                   multiline={true}
                   returnKeyType="done"
-                  onSubmitEditing={() => {
-                    console.log("Submit button pressed");
-                    Keyboard.dismiss();
+                  onKeyPress={({ nativeEvent }) => {
+                    if (
+                      nativeEvent.key === "Enter" ||
+                      nativeEvent.key === "Done"
+                    ) {
+                      // Handle the "Done" key press
+                      setDescription(""); // Clear the input or perform any other action
+                      Keyboard.dismiss(); // Dismiss the keyboard
+                    }
                   }}
                 />
               </View>

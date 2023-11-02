@@ -24,15 +24,17 @@ export default function Map({ navigation }) {
         console.log("Location permission denied");
       }
     };
-    const fetchUserDetails = async () => {
-      try {
-        const user = await getUserDetails();
-        setUsername(user.username);
-      } catch (error) {
-        setUsername(null); // Set username to null in case of an error
-      }
-    };
-    fetchUserDetails();
+    if (currentLocation !== null) {
+      const fetchUserDetails = async () => {
+        try {
+          const user = await getUserDetails();
+          setUsername(user.username);
+        } catch (error) {
+          setUsername(null); // Set username to null in case of an error
+        }
+      };
+      fetchUserDetails();
+    }
     requestLocationPermission();
   }, []);
 

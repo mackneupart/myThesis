@@ -167,7 +167,7 @@ export default function Profile({ handleUserLogout, navigation }) {
           visible={isModalVisible}
           onConfirm={handleConfirmDelete}
           onCancel={handleCancelDelete}
-          text="Are you sure you want to delete this audio story?"
+          text="Are you sure you want to delete this story?"
         />
       ) : (
         <ConfirmationModal

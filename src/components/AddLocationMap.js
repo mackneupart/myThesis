@@ -16,7 +16,7 @@ export default function AddLocationMap({ navigation, route }) {
       // Fetch the natural location
       const naturalLocation = await getNaturalLocation(currentLocation);
 
-      route.params.updateLocation(naturalLocation);
+      route.params.updateLocation(currentLocation);
       route.params.updatePopupVisibility(true);
       console.log("LOCATION: " + naturalLocation);
       navigation.goBack();

@@ -17,15 +17,7 @@ import {
   signOut,
   onAuthStateChanged,
 } from "firebase/auth";
-import {
-  getStorage,
-  ref,
-  getBytes,
-  getDownloadURL,
-  uploadBytes,
-  uploadBytesResumable,
-} from "firebase/storage";
-import * as DocumentPicker from "expo-document-picker";
+import { ref, getDownloadURL, uploadBytesResumable } from "firebase/storage";
 
 export const getUser = () => {
   const auth = getAuth();

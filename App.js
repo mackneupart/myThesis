@@ -1,4 +1,4 @@
-import { StyleSheet, ActivityIndicator, BackHandler } from "react-native";
+import { StyleSheet, ActivityIndicator } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import Login from "./src/Login";
