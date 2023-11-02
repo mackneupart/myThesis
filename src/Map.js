@@ -116,7 +116,7 @@ export default function Map({ navigation }) {
       story.coordinates[0],
       story.coordinates[1]
     );
-    if (distance < 0.5) {
+    if (distance < 0.1) {
       navigation.navigate("Story", { story });
     } else {
       alert("You are too far away from the story to read it.");
