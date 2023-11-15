@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { View, Text, TextInput, Button, StyleSheet } from "react-native";
-import CustomButton from "./components/customButton";
-import { registerUser } from "./config/Database";
+import CustomButton from "../components/customButton";
+import { registerUser } from "../config/Database";
 
 export default function SignUp({ navigation }) {
   const [username, setUsername] = useState("");

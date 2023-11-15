@@ -7,9 +7,9 @@ import {
   getAllStories,
   getUserDetails,
   getAllAudioStories,
-} from "./config/Database";
+} from "../config/Database";
 import { useFocusEffect } from "@react-navigation/native";
-import PopUpAdd from "./components/PopUpAdd";
+import PopUpAdd from "../components/PopUpAdd";
 
 export default function Map({ navigation }) {
   const [currentLocation, setCurrentLocation] = useState(undefined);
@@ -168,7 +168,7 @@ export default function Map({ navigation }) {
             pinColor="blue"
             title="You are here">
             <Image
-              source={require("./assets/icons/person.png")} // Replace with the actual path to your custom icon
+              source={require("../assets/icons/person.png")} // Replace with the actual path to your custom icon
               style={{ width: 40, height: 60 }} // Customize the size of the icon
             />
           </Marker>

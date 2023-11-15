@@ -9,7 +9,7 @@ import {
 import * as Location from "expo-location";
 import { useEffect, useState } from "react";
 import { Audio } from "expo-av";
-import { getImage } from "./config/Database";
+import { getImage } from "../config/Database";
 
 export default function Story({ route }) {
   const { story } = route.params;
@@ -138,7 +138,7 @@ export default function Story({ route }) {
                 justifyContent: "center",
                 marginTop: 50,
               }}>
-              <Image source={require("./assets/icons/speaker.png")} />
+              <Image source={require("../assets/icons/speaker.png")} />
               <Button
                 onPress={() => {
                   playAudio();

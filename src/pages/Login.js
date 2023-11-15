@@ -2,16 +2,16 @@ import { StyleSheet, Text, View, Image, TextInput } from "react-native";
 import { useFonts } from "expo-font";
 import AppLoading from "expo-app-loading";
 import { useEffect, useState } from "react";
-import CustomButton from "./components/customButton";
-import { signInUser, getUser } from "./config/Database";
+import CustomButton from "../components/customButton";
+import { signInUser, getUser } from "../config/Database";
 
 export default function Login({ handleUserLogin, navigation }) {
   const [loaded] = useFonts({
-    "FiraCode-Regular": require("./assets/fonts/FiraCode-Regular.ttf"),
-    "FiraCode-Bold": require("./assets/fonts/FiraCode-Bold.ttf"),
-    "FiraCode-SemiBold": require("./assets/fonts/FiraCode-SemiBold.ttf"),
-    "KaiseiTokumin-Regular": require("./assets/fonts/KaiseiTokumin-Regular.ttf"),
-    "KaiseiTokumin-Bold": require("./assets/fonts/KaiseiTokumin-Bold.ttf"),
+    "FiraCode-Regular": require("../assets/fonts/FiraCode-Regular.ttf"),
+    "FiraCode-Bold": require("../assets/fonts/FiraCode-Bold.ttf"),
+    "FiraCode-SemiBold": require("../assets/fonts/FiraCode-SemiBold.ttf"),
+    "KaiseiTokumin-Regular": require("../assets/fonts/KaiseiTokumin-Regular.ttf"),
+    "KaiseiTokumin-Bold": require("../assets/fonts/KaiseiTokumin-Bold.ttf"),
   });
 
   const [email, setEmail] = useState("");

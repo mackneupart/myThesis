@@ -13,11 +13,11 @@ import {
   deleteStory,
   deleteAudioStory,
   getAudioStoriesForUser,
-} from "./config/Database";
+} from "../config/Database";
 import React, { useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
-import CustomButton from "./components/customButton";
-import ConfirmationModal from "./components/ConfirmationModal"; // Import the ConfirmationModal component
+import CustomButton from "../components/customButton";
+import ConfirmationModal from "../components/ConfirmationModal"; // Import the ConfirmationModal component
 
 export default function Profile({ handleUserLogout, navigation }) {
   const [email, setEmail] = useState("");
@@ -101,7 +101,7 @@ export default function Profile({ handleUserLogout, navigation }) {
         <Text style={styles.textHeader}>Hi, {username}!</Text>
         <View style={styles.imageContainer}>
           <Image
-            source={require("./assets/icons/profile.png")}
+            source={require("../assets/icons/profile.png")}
             style={styles.profileImage}
           />
         </View>
@@ -125,7 +125,7 @@ export default function Profile({ handleUserLogout, navigation }) {
               <View style={styles.storyContainer}>
                 <View style={{ flexDirection: "row" }}>
                   <Image
-                    source={require("./assets/icons/text.png")}
+                    source={require("../assets/icons/text.png")}
                     style={styles.storyIcon}
                   />
                   <Text style={styles.textTitle}>{story.title} </Text>
@@ -147,7 +147,7 @@ export default function Profile({ handleUserLogout, navigation }) {
               <View style={styles.storyContainer}>
                 <View style={{ flexDirection: "row" }}>
                   <Image
-                    source={require("./assets/icons/speaker.png")}
+                    source={require("../assets/icons/speaker.png")}
                     style={styles.storyIcon}
                   />
                   <Text style={styles.textTitle}>{story.title} </Text>

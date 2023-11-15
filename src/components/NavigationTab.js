@@ -1,9 +1,9 @@
 import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
-import Map from "../Map";
-import Profile from "../Profile";
-import Feed from "../Feed";
+import Map from "../pages/Map";
+import Profile from "../pages/Profile";
+import Feed from "../pages/Feed";
 import { StyleSheet, Text, View, Image, TouchableOpacity } from "react-native";
-import Info from "../Info";
+import Info from "../pages/Info";
 
 const Tab = createBottomTabNavigator();
 

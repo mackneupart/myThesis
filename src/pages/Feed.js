@@ -6,7 +6,7 @@ import {
   TouchableOpacity,
   RefreshControl,
 } from "react-native";
-import { getAllStories, getAllAudioStories } from "./config/Database";
+import { getAllStories, getAllAudioStories } from "../config/Database";
 import React, { useState, useEffect } from "react";
 import * as Location from "expo-location";
 import { useFocusEffect } from "@react-navigation/native"; // Import the useFocusEffect hook
