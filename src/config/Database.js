@@ -173,7 +173,7 @@ export const saveStory = async (story) => {
 
   try {
     if (!story.title || !story.description || !story.coordinates) {
-      alert("Please filluot title, description and add a location");
+      alert("Remember to add a title, description and location");
       throw new Error("Invalid story data");
     }
     console.log("STORY IMAGE: " + story.image);
@@ -269,6 +269,7 @@ export const saveAudioStory = async (story) => {
 
   try {
     if (!story.title || !story.coordinates || !story.audioURL) {
+      alert("Remember to add a title, audio recording and location");
       throw new Error("Invalid story data");
     }
     console.log("STORY IMAGE: " + story.image);

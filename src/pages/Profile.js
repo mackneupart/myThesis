@@ -17,7 +17,7 @@ import {
 import React, { useState } from "react";
 import { useFocusEffect } from "@react-navigation/native";
 import CustomButton from "../components/customButton";
-import ConfirmationModal from "../components/ConfirmationModal"; // Import the ConfirmationModal component
+import ConfirmationModal from "../components/ConfirmationModal";
 
 export default function Profile({ handleUserLogout, navigation }) {
   const [email, setEmail] = useState("");
@@ -81,6 +81,7 @@ export default function Profile({ handleUserLogout, navigation }) {
       }
     } catch (error) {
       console.log("Error deleting story: " + error);
+      alert("Error deleting story. Please try again.");
     } finally {
       setIsModalVisible(false); // Close the modal
     }
@@ -242,6 +243,7 @@ const styles = StyleSheet.create({
     marginTop: 20,
     fontSize: 20,
     fontFamily: "KaiseiTokumin-Regular",
+    maxWidth: 200,
   },
   storyContainer: {
     flexDirection: "row",

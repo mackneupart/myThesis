@@ -17,9 +17,6 @@ export default function PopUpAdd({ navigation }) {
   const [isPopupVisible, setIsPopupVisible] = useState(false);
   const [title, settitle] = useState("");
   const [description, setDescription] = useState("");
-  const [latitude, setLatitude] = useState(0);
-  const [longitude, setLongitude] = useState(0);
-  const [currentLocation, setCurrentLocation] = useState(null);
   const [textLocation, setTextLocation] = useState("");
   const [location, setLocation] = useState(null);
   const [isTextChecked, setIsTextChecked] = useState(true);
@@ -27,23 +24,6 @@ export default function PopUpAdd({ navigation }) {
   const [receivedAudioFile, setReceivedAudioFile] = useState(null);
   const [image, setImage] = useState(null);
   const [imageURL, setImageURL] = useState(null);
-
-  // useEffect(() => {
-  //   const getCurrentLocation = async () => {
-  //     try {
-  //       const { coords } = await Location.getCurrentPositionAsync();
-  //       const { latitude, longitude } = coords;
-  //       setCurrentLocation({ latitude, longitude });
-  //     } catch (error) {
-  //       console.log("Error getting location:", error);
-  //     }
-  //   };
-  //   getCurrentLocation();
-  // }, []);
-
-  // useEffect(() => {
-  //   console.log("Current Location:", currentLocation);
-  // }, [currentLocation]);
 
   useEffect(() => {
     const fetchImage = async () => {
@@ -75,15 +55,16 @@ export default function PopUpAdd({ navigation }) {
   }, [location]);
 
   const handleSubmit = async () => {
-    const coordinates = [location.latitude, location.longitude];
-    const story = {
-      title: title,
-      description: description,
-      coordinates: coordinates,
-      image: imageURL,
-    };
-    console.log(story.title, story.description, story.coordinates);
     try {
+      const coordinates = [location.latitude, location.longitude];
+      const story = {
+        title: title,
+        description: description,
+        coordinates: coordinates,
+        image: imageURL,
+      };
+      console.log(story.title, story.description, story.coordinates);
+
       await saveStory(story);
       settitle("");
       setDescription("");
@@ -91,18 +72,10 @@ export default function PopUpAdd({ navigation }) {
       setImageURL(null);
       setIsPopupVisible(false);
     } catch (error) {
-      alert("Something went wrong with saving the story");
+      alert("Remember to add a title, description and location");
       console.log(error + " Error saving story");
     }
   };
-
-  // const useCurrentLocation = () => {
-  //   if (currentLocation !== null) {
-  //     setLatitude(currentLocation.latitude);
-  //     setLongitude(currentLocation.longitude);
-  //     setCurrentLocation({ latitude, longitude });
-  //   }
-  // };
 
   const openPopup = () => {
     setIsPopupVisible(true);

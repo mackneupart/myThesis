@@ -58,13 +58,6 @@ export default function Login({ handleUserLogin, navigation }) {
         A digital archive of queer stories {"\n"} made for and created by fellow
         queers
       </Text>
-      {/* <View>
-        <Image
-          source={require("./assets/icons/cph-map.png")} // Replace with the actual image path
-          style={{ width: 200, height: 200 }} // Set the desired width and height
-        />
-      </View> */}
-
       <View>
         <Text style={styles.textViews}>
           Check out the map without logging in{" "}

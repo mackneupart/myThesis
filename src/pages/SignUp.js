@@ -24,7 +24,7 @@ export default function SignUp({ navigation }) {
   return (
     <View style={styles.container}>
       <View style={styles.brandContainer}>
-        <Text style={styles.brand}>Queer{"\n"}Fortællinger</Text>
+        <Text style={styles.brand}>Queer{"\n"}Annotations</Text>
       </View>
       <Text style={styles.textHeader}>Register now!</Text>
       <Text style={styles.textViews}>
