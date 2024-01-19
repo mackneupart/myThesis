@@ -168,8 +168,8 @@ export default function Map({ navigation }) {
             pinColor="blue"
             title="You are here">
             <Image
-              source={require("../assets/icons/person.png")} // Replace with the actual path to your custom icon
-              style={{ width: 40, height: 60 }} // Customize the size of the icon
+              source={require("../assets/icons/person.png")}
+              style={{ width: 40, height: 60 }}
             />
           </Marker>
         )}

@@ -171,12 +171,7 @@ export default function Profile({ handleUserLogout, navigation }) {
           text="Are you sure you want to delete this story?"
         />
       ) : (
-        <ConfirmationModal
-          visible={isModalVisible}
-          onConfirm={handleConfirmDelete}
-          onCancel={handleCancelDelete}
-          text="Are you sure you want to delete this story?"
-        />
+        <></>
       )}
     </ScrollView>
   );

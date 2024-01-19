@@ -10,6 +10,7 @@ const Tab = createBottomTabNavigator();
 export default function NavigationTab({ handleUserLogout }) {
   return (
     <Tab.Navigator
+      initialRouteName="Map"
       screenOptions={{
         tabBarShowLabel: false,
         tabBarStyle: {

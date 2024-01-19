@@ -55,15 +55,16 @@ export default function App() {
                 <NavigationTab {...props} handleUserLogout={handleUserLogout} />
               )}
             </Stack.Screen>
-            <Stack.Screen
-              name="Story"
-              component={Story}
-              options={{ title: "Story" }}
-            />
+
             <Stack.Screen
               name="Map"
               component={Map}
               options={{ title: "Map", headerShown: false }}
+            />
+            <Stack.Screen
+              name="Story"
+              component={Story}
+              options={{ title: "Story" }}
             />
             <Stack.Screen
               name="CameraComponent"
